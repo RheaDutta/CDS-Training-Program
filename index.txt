@@ -1,0 +1,8 @@
+main_seq - only sequential
+main_mt - only multithreading
+main_mp - only multiprocessing 
+
+main_mp2- most recent attempt at multiprocessing. 
+main_reorder - 
+
+main_test - must be updated to reflect recent optimization changes

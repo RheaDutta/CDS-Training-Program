@@ -109,11 +109,7 @@ def assemble_probabilities(mat, num_range):
 	tree = create_tree(mat, num_range)
 	
 	#Calculating the number of states.
-	num_states = 0
-	for i in tree.get_children():
-		for j in i.get_children():
-			if j.get_state_number()>num_states:
-				num_states = j.get_state_number()			
+	num_states = tree.get_num_states()
 	
 	prob_list = [] #Contains all the probabilities for the row matrix. 
 	state_list = [] #Contains all the state numbers for the tree.

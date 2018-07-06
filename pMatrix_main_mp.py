@@ -1,4 +1,4 @@
-#Find P-Matrix using Multiprocessing and Queues. Very slow as compared to sequential version. 
+#Find P-Matrix using Multiprocessing and Queues. Very slow as compared to sequential version. WORKS. 
 
 
 
@@ -23,11 +23,14 @@ all_states_explored = []
 #---------------Test Cases---------------#
 
 
-mat = [[2,3],[0,0]] #56 states
-num_range = [0,5]
+#mat = [[2,3],[0,0]] #56 states
+#num_range = [0,5]
 
 #mat = [[0,5],[0,0]] #84 states
 #num_range = [0,6]
+
+#mat = [[15,3],[2,0]]
+# num_range = [0,10]
 
 ###############################################################################
 
@@ -59,7 +62,7 @@ def compute(mat, num_range):
 	#Printing results
 	#printing_results(all_results)
 	
-	#print("Total number of states: ", len(all_results))
+	print("Total number of states: ", len(all_results))
 	
 	return all_results
 	

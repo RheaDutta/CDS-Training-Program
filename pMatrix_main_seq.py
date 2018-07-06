@@ -64,8 +64,14 @@ all_total_states = []
 #mat = [[5,2],[2,1]]
 #num_range = [0,10]
 
-mat = [[2,3],[0,0]] #56 states
-num_range = [0,5]
+#mat = [[2,3],[0,0]] #56 states
+#num_range = [0,5]
+
+#mat = [[15,3],[2,0]]
+#num_range = [0,10]
+
+mat = [[0,6],[6,0]]
+num_range = [0,6]
 
 ###############################################################################
 
@@ -101,10 +107,10 @@ def compute(mat, num_range):
 	#printing_results(new_all_results)
 	#print("printing_results() took: ", time.time()-t4, "seconds.") 
 	
-	#print("Total states: ", len(all_states_explored))
+	print("Total states: ", len(all_states_explored))
 	
-	print("len(all_states_explored): ", len(all_states_explored))
-	print("len(all_results): ", len(all_results))
+	#print("all_states_explored: ", all_states_explored)
+	print("all_results: ", all_results)
 	#return new_all_results
 	
 ###############################################################################
@@ -163,13 +169,7 @@ def iterations(num_range):
 	
 	while i<len(all_states_explored):
 		
-		#print("i = ", i)
-		
-		#Creating thread. 
-		#t = threading.Thread(target = do, args = (num_range,i))
-		
 		do(num_range,i)
-		#t.start()
 		
 		#Incrementing iterator. 	
 		i+=1

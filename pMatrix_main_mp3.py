@@ -1,9 +1,18 @@
-#Produces P-Matrix using Multiprocessing - WORKS. 
+#Produces P-Matrix using Multiprocessing - WORKS, NO REORDERING. 
 
 """
 
 This program uses the script pMatrix.py to generate every row of the P-Matrix.
 The final output is the P-Matrix for the given matrix and range of numbers.
+
+Functions in the program:
+	-> compute()
+	-> first_iteration()
+	-> next_iterations()
+	-> update_procs()
+	-> next_iterations_helper()
+	-> joining()
+	-> main function 
 
 Written by - Rhea Dutta. Date - 06/29/2018. 
 
@@ -138,7 +147,7 @@ def next_iterations(num_range):
 		
 		while len(proc_list)<10: #Only allows 10 processes to run at a time. 
 			
-			update = update_procs(proc_list, p_list, i, all_states, mega_list)
+			update = update_procs(proc_list, p_list, i, all_states, mega_list) 
 			proc_list = update[0]
 			p_list = update[1]
 			i = update[2]
@@ -174,8 +183,13 @@ def update_procs(proc_list, p_list, i, all_states, mega_list):
 	for proc in proc_list:
 		if proc.is_alive() == False: #If any of the processes is over, the process is removed
 			proc_list.remove(proc) #from proc_list.
+			
 	vec = all_states[i]
+	
+	#Creates a process
 	p = mp.Process(target = next_iterations_helper, args = (i,vec, num_range, mega_list,all_states))
+	
+	#Adds the processes to the different lists to keep track of them 
 	p_list.append(p)
 	proc_list.append(p)
 	p.start()

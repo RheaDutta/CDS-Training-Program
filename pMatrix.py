@@ -170,6 +170,9 @@ def create_tree(mat, num_range):
 	for child in child_list: #Level 1 nodes
 		add_state(child, child.get_children(), True, tree, l, state_added)
 		
+	#Generating and storing super states to generate condensed matrix later on.
+	tree.generate_super_states()
+	
 	return tree
 			
 #########################################################################################

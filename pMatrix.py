@@ -33,6 +33,7 @@ Sections of the program -
 			-> state_number
 			-> probability
 			-> children - the substitution/permutation of the vector
+			-> super_states 
 		- Has the following functions -
 			-> add_state_number()
 			-> add_probability()
@@ -46,6 +47,7 @@ Sections of the program -
 			-> return_state_given_num()
 			-> get_num_states()
 			-> get_all_states()
+			-> generate_super_states()
 		
 	2. Main Program Functions -
 		-> main()
@@ -412,6 +414,7 @@ class Tree(object):
 			-> state_number
 			-> probability 
 			-> children - the substitution/permutation of the vector.
+			-> super_states
 	- Has the following functions -
 			-> add_state_number()
 			-> add_probability()
@@ -425,6 +428,7 @@ class Tree(object):
 			-> return_state_given_num()
 			-> get_num_states()
 			-> get_all_states()
+			-> generate_super_states()
 	"""
 	
 	def __init__(self, state, state_number=0, probability=None, children=None):
@@ -561,6 +565,10 @@ class Tree(object):
 					break
 				
 		return l
+	
+	def generate_super_states(self):
+		
+		
 		
 
 #########################################################################################

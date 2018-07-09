@@ -8,7 +8,6 @@ Functions in the program -
 	a) compute()
 	b) first_iteration()
 	c) iterations()
-	f) make_matrix()
 	g) printing_results()
 	h) find_new_states()
 	j) reorder()
@@ -142,7 +141,7 @@ def do(num_range,i):
 	#print("working")
 	#t1 = time.time()
 	#Converting the vector in all_states_explored to a matrix. 
-	matrix = make_matrix(i)
+	matrix = pMatrix.make_matrix(all_states_explored[i])
 	#print("				=> Converting to matrix took: ", time.time() - t1, "seconds.")
 			
 	#t2 = time.time()
@@ -175,23 +174,6 @@ def do(num_range,i):
 	find_new_states(tree, num_states)
 	#print("				=> Finding new states took: ", time.time() - t5, "seconds.")
 	#print("done")
-
-###############################################################################
-
-def make_matrix(i):
-	"""
-	Makes matrix out of the current vector being processed in all_states_explored.
-	
-	PARAMETERS: i [int]: Iterator for the while loop in iterations. 
-	
-	"""
-	
-	vector = all_states_explored[i]
-	matrix = []
-	for j in range(0, len(vector),2):
-		matrix.append([vector[j],vector[j+1]])
-			
-	return matrix
 
 ###############################################################################
 

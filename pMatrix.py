@@ -48,6 +48,7 @@ Sections of the program -
 			-> get_num_states()
 			-> get_all_states()
 			-> generate_super_states()
+			-> get_super_states()
 		
 	2. Main Program Functions -
 		-> main()
@@ -429,6 +430,7 @@ class Tree(object):
 			-> get_num_states()
 			-> get_all_states()
 			-> generate_super_states()
+			-> get_super_states()
 	"""
 	
 	def __init__(self, state, state_number=0, probability=None, children=None, super_states=None):
@@ -608,8 +610,14 @@ class Tree(object):
 				l.append(tree.get_state())
 			x.append(l)
 			
-		self.super_states = x 
-
+		self.super_states = x
+		
+	def get_super_states(self):
+		"""
+		Returns super_states.
+		"""
+		return self.super_states
+		
 #########################################################################################
 
 #-------------------------- PERMUTATION FUNCTIONS --------------------------------------#

@@ -67,11 +67,13 @@ def compute(mat, num_range):
 	p_matrix = reorder() #this list is the final result
 	#print("reorder() took: ", time.time()-t3, "seconds.")
 	
+	#Finding the reduced matrix
 	r_matrix = reduced_matrix(p_matrix)
 	print("reduced_matrix: ", r_matrix)
+	
 	#t4 = time.time()
 	#Printing results
-	#printing_results(new_all_results)
+	#printing_results(p_matrix)
 	#print("printing_results() took: ", time.time()-t4, "seconds.") 
 	
 	#print("Total states: ", len(all_states_explored))
@@ -329,4 +331,4 @@ start_time = time.time()
 #Executing the script. 
 compute(mat,num_range)
 
-print("pMatrix_main_draft3.py took ", time.time() - start_time, "seconds to run.")
+print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")

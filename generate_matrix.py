@@ -39,8 +39,8 @@ super_states = []
 #mat = [[2,3],[0,0]] #56 states
 #num_range = [0,5]
 
-mat = [[2,0],[0,0]] #10 states
-num_range = [0,2]
+#mat = [[2,0],[0,0]] #10 states
+#num_range = [0,2]
 
 ###############################################################################
 
@@ -74,12 +74,13 @@ def compute(mat, num_range):
 	#Finding the reduced matrix
 	r_matrix = reduced_matrix(p_matrix)
 	#print("reduced_matrix: ", r_matrix)
-	#print("reduced_matrix() took: ", time.time()-t4, "seconds.") 
+	#print("len(r_matrix): ", len(r_matrix))
 	
 	#t5 = time.time()
 	#Printing results
-	#printing_results(p_matrix)
-	#print("printing_results() took: ", time.time()-t5, "seconds.") 
+	#printing_p_matrix(p_matrix)
+	#printing_r_matrix(r_matrix)
+	#print("printing_p_matrix() took: ", time.time()-t5, "seconds.") 
 	
 	#print("Total states: ", len(all_states_explored))
 	#print("len(all_states_explored): ", len(all_states_explored))
@@ -97,7 +98,7 @@ def compute(mat, num_range):
 	#print(p_matrix)
 	
 	#For both matrices -
-	return (p_matrix, r_matrix)
+	return [p_matrix, r_matrix]
 	
 ###############################################################################
 
@@ -251,7 +252,7 @@ def update_super_states(tree):
 	
 ###############################################################################
 
-def printing_results(new_all_results):
+def printing_p_matrix(new_all_results):
 	"""
 	Prints the P-Matrix in iterations. 
 	
@@ -264,6 +265,21 @@ def printing_results(new_all_results):
 		print("Number of columns: ", len(new_all_results[i]))
 		print("Result: ", new_all_results[i])
 		print("-------------------------------------------------------------------------------------")
+
+###############################################################################
+
+def printing_r_matrix(r_matrix):
+	
+	s = 0
+	for l in r_matrix:
+		print("Super State #: ", r_matrix.index(l))
+		for tup in l:
+			print("Column #: ", l.index(tup))
+			print("Result: ", tup)
+			print("-------------------------------------------------------------------------------------")
+			s+=1
+
+	print("Total number of tuples = ", s)
 
 ###############################################################################
 
@@ -375,6 +391,6 @@ def reduced_matrix_helper(p_matrix, super_state, other_super_state):
 #start_time = time.time()
 
 #Executing the script. 
-compute(mat,num_range)
+#compute(mat,num_range)
 
 #print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")

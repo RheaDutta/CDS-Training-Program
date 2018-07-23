@@ -18,7 +18,7 @@ Functions in the program -
 	j) reduced_matrix()
 	k) reduced_matrix_helper()
 
-Written by - Rhea Dutta. Date - 06/16/2018.
+Written by - Rhea Dutta. Date - 07/23/2018.
 """
 
 """pMatrix script computes the probabilities associated with one state (one tree).
@@ -73,7 +73,7 @@ def compute(mat, num_range):
 	#t4 = time.time()
 	#Finding the reduced matrix
 	r_matrix = reduced_matrix(p_matrix)
-	print("reduced_matrix: ", r_matrix)
+	#print("reduced_matrix: ", r_matrix)
 	#print("reduced_matrix() took: ", time.time()-t4, "seconds.") 
 	
 	#t5 = time.time()
@@ -94,6 +94,9 @@ def compute(mat, num_range):
 	#print("total number of sub_states in super_states: " , len(all_states))
 	
 	#return p_matrix
+	
+	#For both matrices -
+	return (p_matrix, r_matrix)
 	
 ###############################################################################
 

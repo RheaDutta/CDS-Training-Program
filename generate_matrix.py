@@ -46,8 +46,8 @@ num_range = [0,2]
 
 def compute(mat, num_range):
 	"""
-	PRINTS: The P-Matrix for the given matrix.
-			(Can also return the P-Matrix by adding the line - return new_all_results)
+	PRINTS: The P-Matrix and the reduced matrix for the given matrix.
+			(Can also return the P-Matrix by adding the line - return p_matrix)
 	PARAMETERS:	mat [multi-dimensional array]: The matrix whose p-matrix must be found.
 				num_range [list]: The range of numbers that can be substituted in the
 								matrix in the format [min,max].
@@ -93,7 +93,7 @@ def compute(mat, num_range):
 			all_states.append(s)
 	print("total number of sub_states in super_states: " , len(all_states))
 	
-	#return new_all_results
+	#return p_matrix
 	
 ###############################################################################
 
@@ -161,7 +161,22 @@ def iterations(num_range):
 	
 ###############################################################################
 
-def do(num_range,i):
+def do(num_range,i):	
+	"""
+	Fourfold function -
+	-> Creates tree for the current iteration and adds it to the global list all_trees.
+	-> Calculates the total number of states in the current iteration and adds it to the
+		global list all_total_states.
+	-> Finds all states that must be explored in the current iteration and adds it to the
+		golbal list all_states_explored.
+	-> Finds the probability row matrix for the given matrix and adds this row to the
+		global matrix all_results.
+	
+	PARAMETERS: num_range [list]: The range of numbers that can be substituted in the
+								matrix in the format [min,max].
+								Eg: [0,255] for RGB.
+				i [int]: Iterator that iterates through all_states_explored list.
+	"""
 	
 	#print("working")
 	#t1 = time.time()
@@ -207,6 +222,13 @@ def do(num_range,i):
 ###############################################################################
 
 def update_super_states(tree):
+	"""
+	Updates the global list super_states to reflect new super_states.
+	
+	PARAMETERS: tree [pMatrix.tree object]: The Tree object of the state whose
+				probability row matrix is being calculated.
+	
+	"""
 	
 	sp_st = tree.get_super_states()
 	
@@ -305,7 +327,13 @@ def reorder_helper(tree, num_states, result):
 ###############################################################################
 
 def reduced_matrix(p_matrix):
+	"""
+	RETURNS: A condensed version of the p_matrix where the states are super_states
+			associated with the p_matrix.
 	
+	PARAMETERS: p_matrix [list] : The P-Matrix required in the form of a 3D list.
+	
+	"""
 	reduced_matrix = []
 	for super_state in super_states:
 		n = len(super_state)
@@ -318,7 +346,15 @@ def reduced_matrix(p_matrix):
 ###############################################################################
 
 def reduced_matrix_helper(p_matrix, super_state, other_super_state):
+	"""
+	RETURNS: One element of the reduced matrix. 
 	
+	PARAMETERS: p_matrix [list] : The P-Matrix required in the form of a 3D list.
+				super_state [2D list] : The super_state whose probability row is being
+										calculated.
+				other_super_state [2D list]
+	
+	"""
 	result = []
 	for sub_state in super_state:
 		i = all_states_explored.index(sub_state)

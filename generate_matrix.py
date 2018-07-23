@@ -1,5 +1,6 @@
 #Does not use Multithreading or Multiprocessing to find the P-Matrix.
-#Produces P-Matrix using sequential computations. 
+#Produces P-Matrix using sequential computations.
+#Generates reduced matrix.
 
 """
 Program to generate a P-Matrix.
@@ -20,8 +21,8 @@ Written by - Rhea Dutta. Date - 06/16/2018.
 It essentially gives one row in the pMatrix."""
 
 import pMatrix
-import threading
 import time
+import itertools
 
 #Global lists
 all_results = []
@@ -31,6 +32,9 @@ all_total_states = []
 super_states = []
 
 #Test Cases 
+#mat = [[2,3],[0,0]] #56 states
+#num_range = [0,5]
+
 mat = [[2,0],[0,0]] #10 states
 num_range = [0,2]
 
@@ -60,9 +64,11 @@ def compute(mat, num_range):
 	
 	#t3 = time.time()
 	#Reordering results. 
-	new_all_results = reorder() #this list is the final result
-	#print("reorder() took: ", time.time()-t3, "seconds.") 
+	p_matrix = reorder() #this list is the final result
+	#print("reorder() took: ", time.time()-t3, "seconds.")
 	
+	r_matrix = reduced_matrix(p_matrix)
+	print("reduced_matrix: ", r_matrix)
 	#t4 = time.time()
 	#Printing results
 	#printing_results(new_all_results)
@@ -72,6 +78,15 @@ def compute(mat, num_range):
 	
 	print("len(all_states_explored): ", len(all_states_explored))
 	print("len(all_results): ", len(all_results))
+	print("len(super_states): ", len(super_states))
+	print("super_states: ", super_states)
+	
+	all_states = []
+	for sp in super_states:
+		for s in sp:
+			all_states.append(s)
+	print("total number of sub_states in super_states: " , len(all_states))
+	
 	#return new_all_results
 	
 ###############################################################################
@@ -175,7 +190,7 @@ def do(num_range,i):
 	#t5 = time.time()
 	#Finding any new, previously unseen state and adding it to
 	#all_states_explored list so as to explore it. 
-	find_new_states(tree, num_states)
+	find_new_states(tree)
 	#print("				=> Finding new states took: ", time.time() - t5, "seconds.")
 	
 	#Adding super_states
@@ -220,7 +235,7 @@ def printing_results(new_all_results):
 
 ###############################################################################
 
-def find_new_states(tree, num_states):
+def find_new_states(tree):
 	"""
 	Adds any new, previously unseen states in the current tree to be explored
 	to all_states_explored.
@@ -280,9 +295,34 @@ def reorder_helper(tree, num_states, result):
 					new_result[all_states_explored.index(existing_state)]=result[pos]
 					
 	return new_result
+	
+###############################################################################
+
+def reduced_matrix(p_matrix):
+	
+	reduced_matrix = []
+	for super_state in super_states:
+		n = len(super_state)
+		for other_super_state in super_states:
+			result = reduced_matrix_helper(p_matrix, super_state, other_super_state)
+			reduced_matrix.append((n, result))
+
+	return reduced_matrix
 
 ###############################################################################
 
+def reduced_matrix_helper(p_matrix, super_state, other_super_state):
+	
+	result = []
+	for sub_state in super_state:
+		i = all_states_explored.index(sub_state)
+		for other_sub_state in other_super_state:
+			j = all_states_explored.index(other_sub_state)
+			probability = p_matrix[i][j]
+			result.append(probability)
+	return result	
+	
+###############################################################################
 #Keeping track of how long the program takes to run. 
 start_time = time.time()
 

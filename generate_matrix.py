@@ -9,10 +9,14 @@ Functions in the program -
 	a) compute()
 	b) first_iteration()
 	c) iterations()
-	g) printing_results()
-	h) find_new_states()
-	j) reorder()
-	k) reorder_helper()
+	d) do()
+	e) update_super_states()
+	f) printing_results()
+	g) find_new_states()
+	h) reorder()
+	i) reorder_helper()
+	j) reduced_matrix()
+	k) reduced_matrix_helper()
 
 Written by - Rhea Dutta. Date - 06/16/2018.
 """

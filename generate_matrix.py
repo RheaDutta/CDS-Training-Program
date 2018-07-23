@@ -94,6 +94,7 @@ def compute(mat, num_range):
 	#print("total number of sub_states in super_states: " , len(all_states))
 	
 	#return p_matrix
+	#print(p_matrix)
 	
 	#For both matrices -
 	return (p_matrix, r_matrix)
@@ -340,10 +341,12 @@ def reduced_matrix(p_matrix):
 	reduced_matrix = []
 	for super_state in super_states:
 		n = len(super_state)
+		row = []
 		for other_super_state in super_states:
 			result = reduced_matrix_helper(p_matrix, super_state, other_super_state)
-			reduced_matrix.append((n, result))
-
+			row.append((n, result))
+		reduced_matrix.append(row)
+	
 	return reduced_matrix
 
 ###############################################################################
@@ -369,9 +372,9 @@ def reduced_matrix_helper(p_matrix, super_state, other_super_state):
 	
 ###############################################################################
 #Keeping track of how long the program takes to run. 
-start_time = time.time()
+#start_time = time.time()
 
 #Executing the script. 
 compute(mat,num_range)
 
-print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")
+#print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")

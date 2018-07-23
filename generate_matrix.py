@@ -57,8 +57,7 @@ def compute(mat, num_range):
 	
 	#t1 = time.time()
 	#First iteration ever
-	if len(all_states_explored)==0:
-		first_iteration(mat, num_range)
+	first_iteration(mat, num_range)
 	#print("first_iteration() took: ", time.time()-t1, "seconds.") 	
 	
 	#t2 = time.time()
@@ -71,27 +70,28 @@ def compute(mat, num_range):
 	p_matrix = reorder() #this list is the final result
 	#print("reorder() took: ", time.time()-t3, "seconds.")
 	
+	#t4 = time.time()
 	#Finding the reduced matrix
 	r_matrix = reduced_matrix(p_matrix)
 	print("reduced_matrix: ", r_matrix)
+	#print("reduced_matrix() took: ", time.time()-t4, "seconds.") 
 	
-	#t4 = time.time()
+	#t5 = time.time()
 	#Printing results
 	#printing_results(p_matrix)
-	#print("printing_results() took: ", time.time()-t4, "seconds.") 
+	#print("printing_results() took: ", time.time()-t5, "seconds.") 
 	
 	#print("Total states: ", len(all_states_explored))
+	#print("len(all_states_explored): ", len(all_states_explored))
+	#print("len(all_results): ", len(all_results))
+	#print("len(super_states): ", len(super_states))
+	#print("super_states: ", super_states)
 	
-	print("len(all_states_explored): ", len(all_states_explored))
-	print("len(all_results): ", len(all_results))
-	print("len(super_states): ", len(super_states))
-	print("super_states: ", super_states)
-	
-	all_states = []
-	for sp in super_states:
-		for s in sp:
-			all_states.append(s)
-	print("total number of sub_states in super_states: " , len(all_states))
+	#all_states = []
+	#for sp in super_states:
+	#	for s in sp:
+	#		all_states.append(s)
+	#print("total number of sub_states in super_states: " , len(all_states))
 	
 	#return p_matrix
 	

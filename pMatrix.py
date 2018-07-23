@@ -33,6 +33,7 @@ Sections of the program -
 			-> state_number
 			-> probability
 			-> children - the substitution/permutation of the vector
+			-> super_states 
 		- Has the following functions -
 			-> add_state_number()
 			-> add_probability()
@@ -46,6 +47,8 @@ Sections of the program -
 			-> return_state_given_num()
 			-> get_num_states()
 			-> get_all_states()
+			-> generate_super_states()
+			-> get_super_states()
 		
 	2. Main Program Functions -
 		-> main()
@@ -167,6 +170,9 @@ def create_tree(mat, num_range):
 	for child in child_list: #Level 1 nodes
 		add_state(child, child.get_children(), True, tree, l, state_added)
 		
+	#Generating and storing super states to generate condensed matrix later on.
+	tree.generate_super_states()
+	
 	return tree
 			
 #########################################################################################
@@ -412,6 +418,7 @@ class Tree(object):
 			-> state_number
 			-> probability 
 			-> children - the substitution/permutation of the vector.
+			-> super_states
 	- Has the following functions -
 			-> add_state_number()
 			-> add_probability()
@@ -425,9 +432,11 @@ class Tree(object):
 			-> return_state_given_num()
 			-> get_num_states()
 			-> get_all_states()
+			-> generate_super_states()
+			-> get_super_states()
 	"""
 	
-	def __init__(self, state, state_number=0, probability=None, children=None):
+	def __init__(self, state, state_number=0, probability=None, children=None, super_states=None):
 		"""
 		state [list]: The state of the matrix. Eg: [0,2,0,0]
 		state_number [int]: The state number of the state. Eg: [0,2,0,0] has state_number 1.
@@ -561,8 +570,57 @@ class Tree(object):
 					break
 				
 		return l
+	
+	def generate_super_states(self):
+		"""
+		Updates super_states attribute.
+		"""
+		l1 = self.get_children()
+		l1_st_num = []
+		l2 = []
+		for child in l1:
+			l1_st_num.append(child.get_state_number())
+			l2.append(child.get_children())
 		
-
+		l2_st_num = []
+		for children in l2:
+			l = []
+			for child in children:
+				l.append(child.get_state_number())
+			l2_st_num.append(l)
+		
+		super_st = []
+		
+		for st_num in l1_st_num:
+			found = False
+			for st_list in l2_st_num:
+				if st_num in st_list:
+					p1 = l1_st_num.index(st_num)
+					p2 = l2_st_num.index(st_list)
+					if p1!=p2:
+						found = True
+						l = l1[p1].get_children()
+						super_st.append(l)
+						del l1_st_num[p2]
+						break
+			if found is False:
+				super_st.append(l1[l1_st_num.index(st_num)].get_children())
+		
+		x = []
+		for tree_list in super_st:
+			l = []
+			for tree in tree_list:
+				l.append(tree.get_state())
+			x.append(l)
+			
+		self.super_states = x
+		
+	def get_super_states(self):
+		"""
+		Returns super_states.
+		"""
+		return self.super_states
+		
 #########################################################################################
 
 #-------------------------- PERMUTATION FUNCTIONS --------------------------------------#

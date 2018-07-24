@@ -17,6 +17,7 @@ Functions in the program -
 	i) reorder_helper()
 	j) reduced_matrix()
 	k) reduced_matrix_helper()
+	l) reduced_matrix_helper2()
 
 Written by - Rhea Dutta. Date - 07/23/2018.
 """
@@ -390,6 +391,11 @@ def reduced_matrix_helper(p_matrix, super_state, other_super_state):
 ###############################################################################
 
 def reduced_matrix_helper2(r_matrix):
+	"""
+	RETURNS: A compressed version of the reduced matrix where every tuple is in
+			the format (n, numerator, denominator). The number required is
+			[(numerator/denominator)*n].
+	"""
 
 	new_r_matrix = []
 	

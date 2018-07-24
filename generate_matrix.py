@@ -39,8 +39,8 @@ super_states = []
 #mat = [[2,3],[0,0]] #56 states
 #num_range = [0,5]
 
-#mat = [[2,0],[0,0]] #10 states
-#num_range = [0,2]
+mat = [[2,0],[0,0]] #10 states
+num_range = [0,2]
 
 ###############################################################################
 
@@ -79,7 +79,7 @@ def compute(mat, num_range):
 	#t5 = time.time()
 	#Printing results
 	#printing_p_matrix(p_matrix)
-	#printing_r_matrix(r_matrix)
+	printing_r_matrix(r_matrix)
 	#print("printing_p_matrix() took: ", time.time()-t5, "seconds.") 
 	
 	#print("Total states: ", len(all_states_explored))
@@ -363,7 +363,8 @@ def reduced_matrix(p_matrix):
 			row.append((n, result))
 		reduced_matrix.append(row)
 	
-	return reduced_matrix
+	
+	return reduced_matrix_helper2(reduced_matrix)
 
 ###############################################################################
 
@@ -385,12 +386,52 @@ def reduced_matrix_helper(p_matrix, super_state, other_super_state):
 			probability = p_matrix[i][j]
 			result.append(probability)
 	return result	
+
+###############################################################################
+
+def reduced_matrix_helper2(r_matrix):
+
+	new_r_matrix = []
+	
+	for row in r_matrix:
+		new_row = []
+		
+		for tup in row:
+			
+			n = tup[0]
+			prob_list = tup[1]
+			
+			denominators = []
+			for prob in prob_list:
+				for p in prob:
+					if p not in denominators and p!=0:
+						denominators.append(p)
+			
+			denominator = 1
+			for m in denominators:
+				denominator = denominator*m
+				
+			numerators = []
+			for prob in prob_list:
+				for p in prob:
+					if p!=0:
+						numerators.append(denominator//p)
+				
+			numerator = sum(numerators)
+			
+			new_tup = (n, numerator, denominator)
+			
+			new_row.append(new_tup)
+			
+		new_r_matrix.append(new_row)
+	
+	return new_r_matrix
 	
 ###############################################################################
 #Keeping track of how long the program takes to run. 
 #start_time = time.time()
 
 #Executing the script. 
-#compute(mat,num_range)
+compute(mat,num_range)
 
 #print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")

@@ -43,6 +43,12 @@ super_states = []
 mat = [[2,0],[0,0]] #10 states
 num_range = [0,2]
 
+#mat = [[2,1],[0,0]] #20 states
+#num_range = [0,3]
+
+#mat = [[7,7],[0,0]]
+#num_range = [0,7]
+
 ###############################################################################
 
 def compute(mat, num_range):
@@ -79,7 +85,7 @@ def compute(mat, num_range):
 	
 	#t5 = time.time()
 	#Printing results
-	#printing_p_matrix(p_matrix)
+	printing_p_matrix(p_matrix)
 	printing_r_matrix(r_matrix)
 	#print("printing_p_matrix() took: ", time.time()-t5, "seconds.") 
 	
@@ -426,9 +432,7 @@ def reduced_matrix_helper2(r_matrix):
 			numerator = sum(numerators)
 			
 			new_tup = (n, numerator, denominator)
-			
 			new_row.append(new_tup)
-			
 		new_r_matrix.append(new_row)
 	
 	return new_r_matrix

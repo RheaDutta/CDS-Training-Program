@@ -23,14 +23,17 @@ super_states = []
 #---------------Test Cases---------------#
 
 
-#mat = [[2,3],[0,0]] #56 states
-#num_range = [0,5]
+mat = [[2,3],[0,0]] #56 states
+num_range = [0,5]
 
-#mat = [[0,5],[0,0]] #84 states
+#mat = [[0,6],[0,0]] #84 states
 #num_range = [0,6]
 
-mat = [[2,0],[0,0]] #10 states
-num_range = [0,2]
+#mat = [[2,0],[0,0]] #10 states
+#num_range = [0,2]
+
+#mat = [[2,1],[0,0]] #20 states
+#num_range = [0,3]
 
 #_____________________________________________________________________________#
 
@@ -52,7 +55,11 @@ def compute(mat, num_range):
 	#t2 = time.time()
 	#Next iterations
 	next_iterations(num_range)
-	#print("next_iterations() took: ", time.time()-t2, "seconds.") 
+	#print("next_iterations() took: ", time.time()-t2, "seconds.")
+	
+	for i in range(len(mega_list)):
+		t = mega_list[i][3]
+		update_super_states(t)
 	
 	#t3 = time.time()
 	#Reordering results. 
@@ -66,8 +73,8 @@ def compute(mat, num_range):
 	
 	#t5 = time.time()
 	#Printing results
-	printing_p_matrix(p_matrix)
-	printing_r_matrix(r_matrix)
+	#printing_p_matrix(p_matrix)
+	#printing_r_matrix(r_matrix)
 	print_summary(p_matrix, r_matrix)
 	#print("printing results took: ", time.time()-t5, "seconds.")
 	
@@ -171,7 +178,6 @@ def next_iterations(num_range):
 		#Incrementing iterator. 	
 		i+=1
 	
-	t = time.time()
 	#Making sure that all processes are done before moving on.
 	for p in process_list:  
 		p.join()
@@ -184,7 +190,7 @@ def add_next_iterations(num_range,vector,q,states_q):
 	matrix = pMatrix.make_matrix(vector)
 	
 	#Tree for currrent iteration.
-	tree = pMatrix.create_tree(matrix, num_range)	
+	tree = pMatrix.create_tree(matrix, num_range)
 	
 	#Calculating the number of states in current iteration.
 	num_states = tree.get_num_states()
@@ -198,11 +204,8 @@ def add_next_iterations(num_range,vector,q,states_q):
 	#Finding any new, previously unseen state and adding to new_states.
 	new_states = find_new_states(tree, num_states, states_q)
 	
-	#Adding super_states
-	update_super_states(tree)
-	
 	#Adding the results to the Queue q. 
-	q.put([tup, new_states])
+	q.put([tup, new_states])#, new_super_states])
 	
 #-----------------------------------------------------------------------------#
 
@@ -318,7 +321,7 @@ def update_super_states(tree):
 				probability row matrix is being calculated.
 	
 	"""
-	
+		
 	sp_st = tree.get_super_states()
 	
 	for i in range(len(sp_st)):
@@ -441,7 +444,7 @@ def print_summary(p_matrix, r_matrix):
 		
 	print("		-> Total number of sub states: ", s)
 	print("____________________________________________________________________________________")
-
+	
 #-----------------------------------------------------------------------------#
 
 #Executing the script.
@@ -452,8 +455,9 @@ if __name__ == '__main__':
 		p.join()
 		print("pMatrix_main_mp.py (multiprocessing with queues) took : ", time.time()-start_time, " seconds")
 		print("____________________________________________________________________________________")
-
+		
 #_____________________________________________________________________________#
+
 
 
 

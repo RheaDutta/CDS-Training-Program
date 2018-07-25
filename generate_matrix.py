@@ -37,11 +37,11 @@ all_total_states = []
 super_states = []
 
 #Test Cases 
-#mat = [[2,3],[0,0]] #56 states
-#num_range = [0,5]
+mat = [[2,3],[0,0]] #56 states
+num_range = [0,5]
 
-mat = [[2,0],[0,0]] #10 states
-num_range = [0,2]
+#mat = [[2,0],[0,0]] #10 states
+#num_range = [0,2]
 
 #mat = [[2,1],[0,0]] #20 states
 #num_range = [0,3]
@@ -49,7 +49,10 @@ num_range = [0,2]
 #mat = [[7,7],[0,0]]
 #num_range = [0,7]
 
-###############################################################################
+#mat = [[0,6],[0,0]] #84 states
+#num_range = [0,6]
+
+#-----------------------------------------------------------------------------#
 
 def compute(mat, num_range):
 	"""
@@ -92,7 +95,7 @@ def compute(mat, num_range):
 	
 	#return (p_matrix, r_matrix)
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def first_iteration(mat, num_range):
 	"""
@@ -134,7 +137,7 @@ def first_iteration(mat, num_range):
 	#Adding results for first iteration to final list.
 	all_results.append(pMatrix.main(mat, num_range))
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def iterations(num_range):
 	"""
@@ -156,7 +159,7 @@ def iterations(num_range):
 		#Incrementing iterator. 	
 		i+=1
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def do(num_range,i):	
 	"""
@@ -175,48 +178,34 @@ def do(num_range,i):
 				i [int]: Iterator that iterates through all_states_explored list.
 	"""
 	
-	#print("working")
-	#t1 = time.time()
 	#Converting the vector in all_states_explored to a matrix. 
 	matrix = pMatrix.make_matrix(all_states_explored[i])
-	#print("				=> Converting to matrix took: ", time.time() - t1, "seconds.")
-			
-	#t2 = time.time()
+	
 	#Tree for currrent iteration.
 	tree = pMatrix.create_tree(matrix, num_range) 
-	#print("				=> Creating the tree took: ", time.time() - t2, "seconds.")
 	
 	#Adding the tree to all_trees.
 	all_trees.append(tree)
-			
-	#t3 = time.time()
+	
 	#Calculating the number of states in current iteration.
 	num_states = tree.get_num_states()
-	#print("				=> Calculating num_states took: ", time.time() - t3, "seconds.")
 		
 	#Adding total number of states to all_total_states. 
 	all_total_states.append(num_states) 
-		
-	#t4 = time.time()
+	
 	#Finding results for each iteration.
 	r = pMatrix.main(matrix, num_range)
-	#print("				=> Finding results took: ", time.time() - t4, "seconds.")
 		
 	#Adding results for current iteration to all_results. 
 	all_results.append(r)
-		
-	#t5 = time.time()
-	#Finding any new, previously unseen state and adding it to
-	#all_states_explored list so as to explore it. 
+	
+	#Finding any new, previously unseen state and adding it to all_states_explored list.
 	find_new_states(tree)
-	#print("				=> Finding new states took: ", time.time() - t5, "seconds.")
 	
 	#Adding super_states
 	update_super_states(tree)
-	
-	#print("done")
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def update_super_states(tree):
 	"""
@@ -242,7 +231,7 @@ def update_super_states(tree):
 		if present is False:
 			super_states.append(sp_st[i])
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def printing_p_matrix(new_all_results):
 	"""
@@ -260,7 +249,7 @@ def printing_p_matrix(new_all_results):
 		print("-------------------------------------------------------------------------------------")
 	print("____________________________________________________________________________________")
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def printing_r_matrix(r_matrix):
 	
@@ -273,7 +262,7 @@ def printing_r_matrix(r_matrix):
 			print("-------------------------------------------------------------------------------------")
 	print("____________________________________________________________________________________")
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def find_new_states(tree):
 	"""
@@ -292,7 +281,7 @@ def find_new_states(tree):
 		if state not in all_states_explored:
 				all_states_explored.append(state)
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def reorder():
 	"""
@@ -307,7 +296,7 @@ def reorder():
 		
 	return new_all_results 
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def reorder_helper(tree, num_states, result):
 	"""
@@ -336,7 +325,7 @@ def reorder_helper(tree, num_states, result):
 					
 	return new_result
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def reduced_matrix(p_matrix):
 	"""
@@ -358,7 +347,7 @@ def reduced_matrix(p_matrix):
 	
 	return reduced_matrix_helper2(reduced_matrix)
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def reduced_matrix_helper(p_matrix, super_state, other_super_state):
 	"""
@@ -379,7 +368,7 @@ def reduced_matrix_helper(p_matrix, super_state, other_super_state):
 			result.append(probability)
 	return result	
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def reduced_matrix_helper2(r_matrix):
 	"""
@@ -422,7 +411,7 @@ def reduced_matrix_helper2(r_matrix):
 	
 	return new_r_matrix
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def print_summary(p_matrix, r_matrix):
 	

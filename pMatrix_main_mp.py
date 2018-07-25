@@ -1,9 +1,6 @@
 #Find P-Matrix using Multiprocessing and Queues. Very slow as compared to sequential version. 
 
-
-
-
-###############################################################################
+#__________________________________________________________________________________________#
 
 import pMatrix
 import multiprocessing as mp 
@@ -19,17 +16,23 @@ mega_list = []
 
 all_states_explored = []
 #This list will contain all states to be explored.
+
+super_states = []
+#Contains all the superstates. 2D list.
 	
 #---------------Test Cases---------------#
 
 
-mat = [[2,3],[0,0]] #56 states
-num_range = [0,5]
+#mat = [[2,3],[0,0]] #56 states
+#num_range = [0,5]
 
 #mat = [[0,5],[0,0]] #84 states
 #num_range = [0,6]
 
-###############################################################################
+mat = [[2,0],[0,0]] #10 states
+num_range = [0,2]
+
+#_____________________________________________________________________________#
 
 def compute(mat, num_range):
 	"""
@@ -41,29 +44,35 @@ def compute(mat, num_range):
 								Eg: [0,255] for RGB.
 	
 	"""
-	t1 = time.time()
+	#t1 = time.time()
 	#First Iteration
 	first_iteration(mat, num_range)
-	print("first_iteration() took: ", time.time()-t1, "seconds.")
+	#print("first_iteration() took: ", time.time()-t1, "seconds.")
 	
-	t2 = time.time()
+	#t2 = time.time()
 	#Next iterations
-	iterations(num_range)
-	print("iterations() took: ", time.time()-t2, "seconds.") 
+	next_iterations(num_range)
+	#print("next_iterations() took: ", time.time()-t2, "seconds.") 
 	
-	t3 = time.time()
+	#t3 = time.time()
 	#Reordering results. 
-	all_results = reorder()
-	print("reorder() took: ", time.time()-t3, "seconds.") 
+	p_matrix = reorder()
+	#print("reorder() took: ", time.time()-t3, "seconds.")
 	
+	#t4 = time.time()
+	#Generating the reduced probability matrix. 
+	r_matrix = reduced_matrix(p_matrix)
+	#print("reduced_matrix() took: ", time.time()-t4, "seconds.")
+	
+	#t5 = time.time()
 	#Printing results
-	#printing_results(all_results)
+	printing_p_matrix(p_matrix)
+	printing_r_matrix(r_matrix)
+	#print("printing results took: ", time.time()-t5, "seconds.")
 	
-	#print("Total number of states: ", len(all_results))
+	#return (p_matrix, r_matrix)
 	
-	return all_results
-	
-###############################################################################
+#_________________________PROBABILITY MATRIX FUNCTIONS________________________#
 
 def first_iteration(mat, num_range):
 	"""
@@ -92,7 +101,7 @@ def first_iteration(mat, num_range):
 	tree = pMatrix.create_tree(mat, num_range)
 	
 	#Calculating the total number of states in the first iteration.
-	num_states = calculate_num_states(tree)
+	num_states = tree.get_num_states()
 	
 	#Making a tuple out of the above elements.
 	tup = (state,result,num_states,tree)
@@ -100,29 +109,17 @@ def first_iteration(mat, num_range):
 	#Adding the tuple to the mega_list.
 	mega_list.append(tup)
 	
-	#Finding all states to be explored in the first iteration
-	#and adding to all_states_explored list.
-	add_first_iteration(tree, num_states)
+	#Adding all states to be explored in the first iteration to all_states_explored.
+	for st in tree.get_all_states():
+		all_states_explored.append(st)
+		
+	#Adding super states from first tree to super_states.
+	for sp in tree.get_super_states():
+		super_states.append(sp)
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
-def add_first_iteration(tree, num_states):
-	"""
-	Appends all states to be explored in first iteration to all_states_explored list.
-	
-	PARAMETERS: tree [pMatrix.Tree object]: The tree object generated in the present
-				iteration of the program.
-				num_states [int]: The total number of states present in the given
-				tree.
-	
-	"""
-	l = return_all_states(tree, num_states)
-	for ele in l:
-		all_states_explored.append(ele)
-	
-###############################################################################
-
-def iterations(num_range):
+def next_iterations(num_range):
 	"""
 	Finds probability row matrix for all the vectors (i.e. states) in the all_states_explored
 	list and builds the all_results P-Matrix. 
@@ -140,7 +137,6 @@ def iterations(num_range):
 	process_list = []
 	
 	while i<len(all_states_explored):
-		#print("process number: ", i)
 		
 		#Will contain a copy of all_states_explored at this point.
 		states_q = all_states_explored
@@ -178,22 +174,19 @@ def iterations(num_range):
 	#Making sure that all processes are done before moving on.
 	for p in process_list:  
 		p.join()
-	#print("time taken to join: ", time.time()-t)
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def add_next_iterations(num_range,vector,q,states_q):
 	
-	#print("working")
-	
 	#Converting the vector in all_states_explored to a matrix. 
-	matrix = make_matrix(vector)
+	matrix = pMatrix.make_matrix(vector)
 	
 	#Tree for currrent iteration.
 	tree = pMatrix.create_tree(matrix, num_range)	
 	
 	#Calculating the number of states in current iteration.
-	num_states = calculate_num_states(tree)
+	num_states = tree.get_num_states()
 	
 	#Finding results for each iteration.
 	result = pMatrix.main(matrix, num_range)
@@ -204,11 +197,13 @@ def add_next_iterations(num_range,vector,q,states_q):
 	#Finding any new, previously unseen state and adding to new_states.
 	new_states = find_new_states(tree, num_states, states_q)
 	
+	#Adding super_states
+	update_super_states(tree)
+	
 	#Adding the results to the Queue q. 
 	q.put([tup, new_states])
-	#print("done")
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def reorder():
 	"""
@@ -222,7 +217,7 @@ def reorder():
 	process_list = []
 	
 	for i in range(0, len(mega_list)):
-		new_result = [0]*len(mega_list) #The reordered result for each iteration.
+		new_result = [[0]]*len(mega_list) #The reordered result for each iteration.
 		q = mp.Queue()
 		p = mp.Process(target = reorder_helper, args = (mega_list[i],i,new_result, mega_list,q))
 		process_list.append(p)
@@ -235,7 +230,7 @@ def reorder():
 	
 	return all_results
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 def reorder_helper(tup,i,new_result, mega_list,q):
 	"""
@@ -256,7 +251,7 @@ def reorder_helper(tup,i,new_result, mega_list,q):
 	tree = tup[3]
 	
 	#All states that are in the tree.
-	states = return_all_states(tree,num_states)
+	states = tree.get_all_states()
 	
 	for i in range(len(mega_list)):
 		for state in states:
@@ -267,42 +262,25 @@ def reorder_helper(tup,i,new_result, mega_list,q):
 	
 	q.put(new_result)
 	
-###############################################################################
+#-----------------------------------------------------------------------------#
 
-def printing_results(all_results):
+def printing_p_matrix(p_matrix):
 	"""
 	Prints the P-Matrix in iterations. 
 	
 	PARAMETERS: new_all_results [list] - The P-Matrix required in the form of a 3D list.
 	
 	"""
-	for i in range(len(all_results)):
+	print("________________________________PROBABILITY MATRIX__________________________________ ")
+	for i in range(len(p_matrix)):
 		print("Row Number: ", i+1)
 		print("Vector: ", mega_list[i][0])
-		print("Number of columns: ", len(all_results[i]))
-		print("Result: ", all_results[i])
+		print("Number of columns: ", len(p_matrix[i]))
+		print("Result: ", p_matrix[i])
 		print("-------------------------------------------------------------------------------------")
+	print("____________________________________________________________________________________")
 
-###############################################################################
-
-#------------------------- HELPER FUNCTIONS ----------------------------------#
-
-###############################################################################
-
-def make_matrix(vector):
-	"""
-	Makes matrix out of the current vector being processed in all_states_explored.
-	
-	PARAMETERS: vector [list]: The 1D list that must be converted to a 2D list.  
-	
-	"""
-	matrix = []
-	for j in range(0, len(vector),2):
-		matrix.append([vector[j],vector[j+1]])
-			
-	return matrix
-
-###############################################################################
+#-----------------------------------------------------------------------------#
 		
 def find_new_states(tree, num_states, states_q):
 	"""
@@ -315,7 +293,7 @@ def find_new_states(tree, num_states, states_q):
 				tree.
 	
 	"""
-	row = return_all_states(tree, num_states)
+	row = tree.get_all_states()
 	
 	new_states = []
 	
@@ -324,59 +302,138 @@ def find_new_states(tree, num_states, states_q):
 				new_states.append(state)
 
 	return new_states
-	
-###############################################################################
 
-def return_all_states(tree, num_states):
+#-----------------------------------------------------------------------------#
+
+#__________________________REDUCED MATRIX FUNCTIONS___________________________#
+
+#-----------------------------------------------------------------------------#
+
+def update_super_states(tree):
 	"""
-	Returns all states in the tree.
+	Updates the global list super_states to reflect new super_states.
 	
-	PARAMETERS: tree [pMatrix.Tree object]: The tree object generated in the present
-				iteration of the program.
-				num_states [int]: The total number of states present in the given
-				tree.
+	PARAMETERS: tree [pMatrix.tree object]: The Tree object of the state whose
+				probability row matrix is being calculated.
 	
-	""" 
-
-	l = []
+	"""
 	
-	for k in range(1, num_states+1):
-		for i in tree.get_children():
-			for j in i.get_children():
-				if j.get_state_number()==k:
-					l.append(j.get_state())
-					break
-			if j.get_state_number()==k:
+	sp_st = tree.get_super_states()
+	
+	for i in range(len(sp_st)):
+		
+		sample_state = sp_st[i][0]
+		
+		present = False
+		for super_state in super_states:
+			if sample_state in super_state:
+				present = True
 				break
+		
+		if present is False:
+			super_states.append(sp_st[i])
+	
+#-----------------------------------------------------------------------------#
+
+def reduced_matrix(p_matrix):
+	"""
+	RETURNS: A condensed version of the p_matrix where the states are super_states
+			associated with the p_matrix.
+	
+	PARAMETERS: p_matrix [list] : The P-Matrix required in the form of a 3D list.
+	
+	"""
+	reduced_matrix = []
+	for super_state in super_states:
+		n = len(super_state)
+		row = []
+		for other_super_state in super_states:
+			result = reduced_matrix_helper(p_matrix, super_state, other_super_state)
+			row.append((n, result))
+		reduced_matrix.append(row)
+	
+	return reduced_matrix_helper2(reduced_matrix)
+
+#-----------------------------------------------------------------------------#
+
+def reduced_matrix_helper(p_matrix, super_state, other_super_state):
+	"""
+	RETURNS: One element of the reduced matrix. 
+	
+	PARAMETERS: p_matrix [list] : The P-Matrix required in the form of a 3D list.
+				super_state [2D list] : The super_state whose probability row is being
+										calculated.
+				other_super_state [2D list]
+	
+	"""
+	result = []
+	for sub_state in super_state:
+		i = all_states_explored.index(sub_state)
+		for other_sub_state in other_super_state:
+			j = all_states_explored.index(other_sub_state)
+			probability = p_matrix[i][j]
+			result.append(probability)
+	return result	
+
+#-----------------------------------------------------------------------------#
+
+def reduced_matrix_helper2(r_matrix):
+	"""
+	RETURNS: A compressed version of the reduced matrix where every tuple is in
+			the format (n, numerator, denominator). The number required is
+			[(numerator/denominator)*n].
+	"""
+
+	new_r_matrix = []
+	
+	for row in r_matrix:
+		new_row = []
+		
+		for tup in row:
 			
-	return l
-
-###############################################################################
-
-def calculate_num_states(tree):
-	"""
-	Calculates the total number of states in the given tree. 
+			n = tup[0]
+			prob_list = tup[1]
+			
+			denominators = []
+			for prob in prob_list:
+				for p in prob:
+					if p not in denominators and p!=0:
+						denominators.append(p)
+			
+			denominator = 1
+			for m in denominators:
+				denominator = denominator*m
+				
+			numerators = []
+			for prob in prob_list:
+				for p in prob:
+					if p!=0:
+						numerators.append(denominator//p)
+				
+			numerator = sum(numerators)
+			
+			new_tup = (n, numerator, denominator)
+			new_row.append(new_tup)
+		new_r_matrix.append(new_row)
 	
-	PARAMETERS: tree [pMatrix.Tree object]: The tree object generated in the present
-				iteration of the program. 
+	return new_r_matrix
+
+#-----------------------------------------------------------------------------#
+
+def printing_r_matrix(r_matrix):
 	
-	"""
-	
-	#Calculating num_states - the number of states in first iteration. 
-	num_states = 0
-	for i in tree.get_children():
-		for j in i.get_children():
-			if j.get_state_number()>num_states:
-				num_states = j.get_state_number()
-	
-	return num_states
+	print("________________________________REDUCED MATRIX______________________________________")
+	s = 0
+	for l in r_matrix:
+		print("Super State #: ", r_matrix.index(l))
+		for tup in l:
+			print("Column #: ", l.index(tup))
+			print("Result: ", tup)
+			print("-------------------------------------------------------------------------------------")
+			s+=1
+	print("____________________________________________________________________________________")
 
-###############################################################################
-
-
-
-
-###############################################################################
+#-----------------------------------------------------------------------------#
 
 #Executing the script.
 start_time = time.time()
@@ -384,9 +441,9 @@ if __name__ == '__main__':
 		p = mp.Process(target=compute, args = (mat,num_range))
 		p.start()
 		p.join()
-		print("pMatrix_main.py (with multiprocessing) took : ", time.time()-start_time, " seconds")
+		print("pMatrix_main_mp.py (multiprocessing with queues) took : ", time.time()-start_time, " seconds")
 
-###############################################################################
+#_____________________________________________________________________________#
 
 
 

@@ -87,25 +87,10 @@ def compute(mat, num_range):
 	#Printing results
 	printing_p_matrix(p_matrix)
 	printing_r_matrix(r_matrix)
+	print_summary(p_matrix, r_matrix)
 	#print("printing_p_matrix() took: ", time.time()-t5, "seconds.") 
 	
-	#print("Total states: ", len(all_states_explored))
-	#print("len(all_states_explored): ", len(all_states_explored))
-	#print("len(all_results): ", len(all_results))
-	#print("len(super_states): ", len(super_states))
-	#print("super_states: ", super_states)
-	
-	#all_states = []
-	#for sp in super_states:
-	#	for s in sp:
-	#		all_states.append(s)
-	#print("total number of sub_states in super_states: " , len(all_states))
-	
-	#return p_matrix
-	#print(p_matrix)
-	
-	#For both matrices -
-	return [p_matrix, r_matrix]
+	#return (p_matrix, r_matrix)
 	
 ###############################################################################
 
@@ -266,27 +251,27 @@ def printing_p_matrix(new_all_results):
 	PARAMETERS: new_all_results [list] - The P-Matrix required in the form of a 3D list.
 	
 	"""
+	print("________________________________PROBABILITY MATRIX__________________________________ ")
 	for i in range(len(new_all_results)):
 		print("Row Number: ", i+1)
 		print("Vector: ", all_states_explored[i])
 		print("Number of columns: ", len(new_all_results[i]))
 		print("Result: ", new_all_results[i])
 		print("-------------------------------------------------------------------------------------")
+	print("____________________________________________________________________________________")
 
 ###############################################################################
 
 def printing_r_matrix(r_matrix):
 	
-	s = 0
+	print("________________________________REDUCED MATRIX______________________________________")
 	for l in r_matrix:
 		print("Super State #: ", r_matrix.index(l))
 		for tup in l:
 			print("Column #: ", l.index(tup))
 			print("Result: ", tup)
 			print("-------------------------------------------------------------------------------------")
-			s+=1
-
-	print("Total number of tuples = ", s)
+	print("____________________________________________________________________________________")
 
 ###############################################################################
 
@@ -438,10 +423,30 @@ def reduced_matrix_helper2(r_matrix):
 	return new_r_matrix
 	
 ###############################################################################
+
+def print_summary(p_matrix, r_matrix):
+	
+	print("________________________________SUMMARY OF DATA_____________________________________")
+	print(" 1. P-Matrix")
+	print("		-> Number of states: ", len(all_states_explored))
+	print("		-> Number of rows in P-Matrix: ", len(p_matrix))
+	print(" 2. Reduced P-Matrix")
+	print("		-> Number of super states: ", len(super_states))
+	print("		-> Number of rows in reduced P-Matrix: ", len(r_matrix))
+	
+	s = 0
+	for st in super_states:
+		s+=len(st)
+		
+	print("		-> Total number of sub states: ", s)
+	print("____________________________________________________________________________________")
+
+#-----------------------------------------------------------------------------#
 #Keeping track of how long the program takes to run. 
-#start_time = time.time()
+start_time = time.time()
 
 #Executing the script. 
 compute(mat,num_range)
 
-#print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")
+print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")
+print("____________________________________________________________________________________")

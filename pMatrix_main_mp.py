@@ -68,6 +68,7 @@ def compute(mat, num_range):
 	#Printing results
 	printing_p_matrix(p_matrix)
 	printing_r_matrix(r_matrix)
+	print_summary(p_matrix, r_matrix)
 	#print("printing results took: ", time.time()-t5, "seconds.")
 	
 	#return (p_matrix, r_matrix)
@@ -348,15 +349,16 @@ def reduced_matrix(p_matrix):
 		n = len(super_state)
 		row = []
 		for other_super_state in super_states:
-			result = reduced_matrix_helper(p_matrix, super_state, other_super_state)
-			row.append((n, result))
+			result = reduced_matrix_helper1(p_matrix, super_state, other_super_state)
+			new_result = reduced_matrix_helper2((n, result))
+			row.append(new_result)
 		reduced_matrix.append(row)
 	
-	return reduced_matrix_helper2(reduced_matrix)
+	return reduced_matrix
 
 #-----------------------------------------------------------------------------#
 
-def reduced_matrix_helper(p_matrix, super_state, other_super_state):
+def reduced_matrix_helper1(p_matrix, super_state, other_super_state):
 	"""
 	RETURNS: One element of the reduced matrix. 
 	
@@ -377,60 +379,67 @@ def reduced_matrix_helper(p_matrix, super_state, other_super_state):
 
 #-----------------------------------------------------------------------------#
 
-def reduced_matrix_helper2(r_matrix):
-	"""
-	RETURNS: A compressed version of the reduced matrix where every tuple is in
-			the format (n, numerator, denominator). The number required is
-			[(numerator/denominator)*n].
-	"""
-
-	new_r_matrix = []
+def reduced_matrix_helper2(tup):
 	
-	for row in r_matrix:
-		new_row = []
-		
-		for tup in row:
+	n = tup[0]
+	prob_list = tup[1]
 			
-			n = tup[0]
-			prob_list = tup[1]
+	denominators = []
+	for prob in prob_list:
+		for p in prob:
+			if p not in denominators and p!=0:
+				denominators.append(p)
 			
-			denominators = []
-			for prob in prob_list:
-				for p in prob:
-					if p not in denominators and p!=0:
-						denominators.append(p)
-			
-			denominator = 1
-			for m in denominators:
-				denominator = denominator*m
+	denominator = 1
+	for m in denominators:
+		denominator = denominator*m
 				
-			numerators = []
-			for prob in prob_list:
-				for p in prob:
-					if p!=0:
-						numerators.append(denominator//p)
+	numerators = []
+	for prob in prob_list:
+		for p in prob:
+			if p!=0:
+				numerators.append(denominator//p)
 				
-			numerator = sum(numerators)
+	numerator = sum(numerators)
 			
-			new_tup = (n, numerator, denominator)
-			new_row.append(new_tup)
-		new_r_matrix.append(new_row)
+	new_tup = (n, numerator, denominator)
 	
-	return new_r_matrix
+	return new_tup
 
 #-----------------------------------------------------------------------------#
 
 def printing_r_matrix(r_matrix):
 	
 	print("________________________________REDUCED MATRIX______________________________________")
-	s = 0
 	for l in r_matrix:
 		print("Super State #: ", r_matrix.index(l))
 		for tup in l:
 			print("Column #: ", l.index(tup))
 			print("Result: ", tup)
 			print("-------------------------------------------------------------------------------------")
-			s+=1
+	print("____________________________________________________________________________________")
+
+#-----------------------------------------------------------------------------#
+
+#__________________________MISCELLANEOUS FUNCTIONS____________________________#
+
+#-----------------------------------------------------------------------------#
+
+def print_summary(p_matrix, r_matrix):
+	
+	print("________________________________SUMMARY OF DATA_____________________________________")
+	print(" 1. P-Matrix")
+	print("		-> Number of states: ", len(all_states_explored))
+	print("		-> Number of rows in P-Matrix: ", len(p_matrix))
+	print(" 2. Reduced P-Matrix")
+	print("		-> Number of super states: ", len(super_states))
+	print("		-> Number of rows in reduced P-Matrix: ", len(r_matrix))
+	
+	s = 0
+	for st in super_states:
+		s+=len(st)
+		
+	print("		-> Total number of sub states: ", s)
 	print("____________________________________________________________________________________")
 
 #-----------------------------------------------------------------------------#
@@ -442,6 +451,7 @@ if __name__ == '__main__':
 		p.start()
 		p.join()
 		print("pMatrix_main_mp.py (multiprocessing with queues) took : ", time.time()-start_time, " seconds")
+		print("____________________________________________________________________________________")
 
 #_____________________________________________________________________________#
 

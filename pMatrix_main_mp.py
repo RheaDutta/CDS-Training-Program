@@ -23,14 +23,17 @@ super_states = []
 #---------------Test Cases---------------#
 
 
-mat = [[2,3],[0,0]] #56 states
-num_range = [0,5]
+#mat = [[2,3],[0,0]] #56 states
+#num_range = [0,5]
 
-#mat = [[0,6],[0,0]] #84 states
+#mat = [[2,2],[2,2]]
+#num_range = [0,7]
+
+#mat = [[2,2],[2,2]]
 #num_range = [0,6]
 
-#mat = [[2,0],[0,0]] #10 states
-#num_range = [0,2]
+mat = [[2,0],[0,0]] #10 states
+num_range = [0,2]
 
 #mat = [[2,1],[0,0]] #20 states
 #num_range = [0,3]
@@ -47,38 +50,32 @@ def compute(mat, num_range):
 								Eg: [0,255] for RGB.
 	
 	"""
-	#t1 = time.time()
 	#First Iteration
 	first_iteration(mat, num_range)
-	#print("first_iteration() took: ", time.time()-t1, "seconds.")
 	
-	#t2 = time.time()
 	#Next iterations
 	next_iterations(num_range)
-	#print("next_iterations() took: ", time.time()-t2, "seconds.")
 	
+	#Updating super states.
 	for i in range(len(mega_list)):
 		t = mega_list[i][3]
 		update_super_states(t)
 	
-	#t3 = time.time()
 	#Reordering results. 
-	p_matrix = reorder()
-	#print("reorder() took: ", time.time()-t3, "seconds.")
+	reordered_p_matrix = reorder()
 	
-	#t4 = time.time()
+	#Simplifying the P-Matrix
+	p_matrix = compress_p_matrix(reordered_p_matrix)
+	
 	#Generating the reduced probability matrix. 
-	r_matrix = reduced_matrix(p_matrix)
-	#print("reduced_matrix() took: ", time.time()-t4, "seconds.")
+	r_matrix = reduced_matrix(reordered_p_matrix)
 	
-	#t5 = time.time()
 	#Printing results
-	#printing_p_matrix(p_matrix)
-	#printing_r_matrix(r_matrix)
+	printing_p_matrix(p_matrix)
+	printing_r_matrix(r_matrix)
 	print_summary(p_matrix, r_matrix)
-	#print("printing results took: ", time.time()-t5, "seconds.")
 	
-	#return (p_matrix, r_matrix)
+	return (p_matrix, r_matrix)
 	
 #_________________________PROBABILITY MATRIX FUNCTIONS________________________#
 
@@ -307,6 +304,26 @@ def find_new_states(tree, num_states, states_q):
 
 	return new_states
 
+#-----------------------------------------------------------------------------#
+
+def compress_p_matrix(p_matrix):
+	
+	#Produces the P-Matrix in a compressed form in format - [numerator, denominator]
+	
+	simple_p_matrix = []
+	for row in p_matrix:
+		new_row = []
+		for p in row:
+			if p[0]==0:
+				new_p = [0]
+			else:
+				n = len(p)
+				new_p = [n, p[0]] #[numerator, denominator]
+			new_row.append(new_p)
+		simple_p_matrix.append(new_row)	
+	
+	return simple_p_matrix		
+	
 #-----------------------------------------------------------------------------#
 
 #__________________________REDUCED MATRIX FUNCTIONS___________________________#

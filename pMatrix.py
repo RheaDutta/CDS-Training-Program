@@ -126,7 +126,7 @@ def assemble_probabilities(mat, num_range):
 			if j.get_state_number()==k:
 				break
 		if len(state_list)==num_states:
-			return prob_list 
+			return prob_list
 
 #########################################################################################
 

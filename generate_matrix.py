@@ -428,12 +428,6 @@ def print_summary(p_matrix, r_matrix):
 
 #-----------------------------------------------------------------------------#
 
-def bound():
-	
-	pass
-
-#-----------------------------------------------------------------------------#
-
 def compress_p_matrix(p_matrix):
 	
 	#Produces the P-Matrix in a compressed form in format - [numerator, denominator]

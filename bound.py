@@ -213,7 +213,7 @@ def printing_matrix(matrix, is_p_matrix):
 		print("________________________________REDUCED MATRIX______________________________________")
 	
 	
-	for i in range(matrix):
+	for i in range(len(matrix)):
 		print(matrix[i])
 		print("-------------------------------------------------------------------------------------")
 	print("____________________________________________________________________________________")
@@ -239,34 +239,34 @@ def printing_summary(p_matrix, r_matrix):
 
 
 	print(" 2. Reduced P-Matrix")
-	print("		-> Number of super states: ", len(super_states))
-	print("		-> Number of rows in reduced P-Matrix: ", len(r_matrix))
+	print("		-> Number of super states: ", len(r_matrix))
 	
 	p = 0
-	for st in super_states:
-		p+=len(st)
+	for row in r_matrix:
+		p+=len(row)
 		
 	print("		-> Total number of sub states: ", p)
 	print("____________________________________________________________________________________")
 #______________________________________________________________________________________________#
 
-def execute_script(input):
+def execute_script(input, must_print, only_bounds):
 
 	"""
 	
 	Executes the script.
+	Output in the form [P_MATRIX, R_MATRIX, P_BOUND, R_BOUND].
 
 	PARAMETER: input [list]: [matrix, range]
+				must_print [bool]: True if results must be printed, False otherwise.
+				only_bounds [bool]: True if only bounds required and not matrices.
+									False otherwise.
 
 	"""
 
-	#Input
-	mat = input[0]
-	num_range = input[1]
-	
 	#Comment out whichever one is not being used.
-	matrices = GM.compute(mat, num_range)
-	#matrices = PM.compute(mat, num_range)
+	#Do not change 'False' here.
+	matrices = GM.compute(input, False)
+	#matrices = PM.compute(input, False)
 
 	#The required matrices. 
 	P_MATRIX = matrices[0]
@@ -277,13 +277,21 @@ def execute_script(input):
 	R_BOUND = calculate_bound(R_MATRIX, False)
 	
 	#Printing results.
-	printing_bound(P_BOUND, True)
-	printing_bound(R_BOUND, False)
+	if must_print:
+		if only_bounds:
+			printing_bound(P_BOUND, True)
+			printing_bound(R_BOUND, False)
+		else:
+			printing_matrix(P_MATRIX, True)
+			printing_matrix(R_MATRIX, False)
+			printing_bound(P_BOUND, True)
+			printing_bound(R_BOUND, False)
+			printing_summary(P_MATRIX, R_MATRIX)
 
 	#Returning results.
-	return [P_MATRIX, P_BOUND, R_MATRIX, R_BOUND]
+	return [P_MATRIX, R_MATRIX, P_BOUND, R_BOUND]
 #______________________________________________________________________________________________#
 
-input = [[[2,0],[0,0]], [0,2]]
+#input = [[[2,0],[0,0]], [0,2]]
 #Executing the script
-execute_script(input)
+#execute_script(input, True, True)

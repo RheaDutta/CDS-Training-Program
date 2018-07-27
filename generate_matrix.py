@@ -36,37 +36,25 @@ all_trees = []
 all_total_states = []
 super_states = []
 
-#Test Cases 
-#mat = [[2,3],[0,0]] #56 states
-#num_range = [0,5]
-
-mat = [[2,0],[0,0]] #10 states
-num_range = [0,2]
-
-#mat = [[2,1],[0,0]] #20 states
-#num_range = [0,3]
-
-#mat = [[7,7],[0,0]]
-#num_range = [0,7]
-
-#mat = [[0,6],[0,0]] #84 states
-#num_range = [0,6]
-
-#mat = [[3,0],[0,0]] #A weird bug shows up. 
-#num_range = [0,2]
-
 #-----------------------------------------------------------------------------#
 
-def compute(mat, num_range):
+def compute(input, must_print):
 	"""
-	PRINTS: The P-Matrix and the reduced matrix for the given matrix.
+	PRINTS: The P-Matrix and the reduced #matrix for the given matrix.
 			(Can also return the P-Matrix by adding the line - return p_matrix)
 	PARAMETERS:	mat [multi-dimensional array]: The matrix whose p-matrix must be found.
 				num_range [list]: The range of numbers that can be substituted in the
 								matrix in the format [min,max].
 								Eg: [0,255] for RGB.
+				input[list]: [mat, num_range]
+				must_print [bool]: True if results must be printed, False otherwise.
 	
 	"""
+	
+	#Input
+	mat = input[0]
+	num_range = input[1]
+
 	#First iteration ever
 	first_iteration(mat, num_range)
 	
@@ -83,13 +71,12 @@ def compute(mat, num_range):
 	r_matrix = reduced_matrix(reordered_p_matrix)
 	
 	#Printing results
-	printing_p_matrix(p_matrix)
-	printing_r_matrix(r_matrix)
-	print_summary(p_matrix, r_matrix)
+	if must_print:
+		printing_p_matrix(p_matrix)
+		printing_r_matrix(r_matrix)
+		print_summary(p_matrix, r_matrix)
 	
-	#print("printing_p_matrix() took: ", time.time()-t5, "seconds.") 
-	
-	return (p_matrix, r_matrix)
+	return [p_matrix, r_matrix]
 	
 #-----------------------------------------------------------------------------#
 
@@ -450,10 +437,10 @@ def compress_p_matrix(p_matrix):
 
 
 #Keeping track of how long the program takes to run. 
-start_time = time.time()
+#start_time = time.time()
 
 #Executing the script. 
-compute(mat,num_range)
+#compute(mat,num_range)
 
-print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")
-print("____________________________________________________________________________________")
+#print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")
+#print("____________________________________________________________________________________")

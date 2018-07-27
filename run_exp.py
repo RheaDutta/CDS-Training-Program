@@ -19,14 +19,62 @@ Written by Rhea Dutta
 """
 #___________________________________________________________________________________________
 
-import bound
+#To find matrices + bounds.
+import bound 
+
+#To find only matrices. Use either one.
+import generate_matrix as M 
+#import pMatrix_main_mp as M
+
 #___________________________________________________________________________________________
 
-def run_experiments():
+def run_experiments(must_print):
 
     """
     
-    Runs all experiments and stores the output.
+    Runs experiments. Use whichever one is required.
+
+    PARAMETERS: must_print[bool]: True if result should be printed, False otherwise.
+
+    """
+
+    #Only generate matrices.
+    only_matrices(must_print)
+    
+    #Both matrices and bounds.
+    #matrices_and_bounds(must_print)
+
+    #Only bounds
+    #only_bounds(must_print)
+#___________________________________________________________________________________________
+
+def only_matrices(must_print):
+
+    """
+    Generates P-Matrix and reduced P-Matrix.
+    Output in format - [p_matrix, reduced p_matrix].
+
+    PARAMETERS: must_print[bool]: True if result should be printed, False otherwise.
+
+    """
+
+    #Extracting input.
+    input = find_input()
+
+    #Generates matrices. matrices = [p_matrix, reduced p_matrix]
+    matrices = M.compute(input, must_print)
+    
+    #Storing output.
+    store_output(matrices)
+#___________________________________________________________________________________________
+
+def matrices_and_bounds(must_print):
+
+    """
+    Generates P-Matrix, reduced P-Matrix, and bounds on mixing time for both.
+    Output in format - [P_MATRIX, R_MATRIX, P_BOUND, R_BOUND]
+
+    PARAMETERS: must_print[bool]: True if result should be printed, False otherwise.
 
     """
 
@@ -34,22 +82,30 @@ def run_experiments():
     input = find_input()
 
     #Running the experiment.
-    result = bound.execute_script(input)
+    result = bound.execute_script(input, must_print, False)
+    
+    #Storing output.
+    store_output(result) #result = [P_MATRIX, R_MATRIX, P_BOUND, R_BOUND]
+#___________________________________________________________________________________________
 
-    #Results of the experiment.
-    P_MATRIX = result[0]
-    P_BOUND = result[1]
-    R_MATRIX = result[2]
-    R_BOUND = result[3]
+def only_bounds(must_print):
 
-    #Printing results.
-    bound.printing_matrix(P_MATRIX, True)
-    bound.printing_matrix(R_MATRIX, False)
-    bound.printing_bound(P_BOUND, True)
-    bound.printing_bound(R_BOUND, False)
+    """
+    Generates the bounds on mixing time for the P-matrix and the reduced P-Matrix.
+    Output in format - [P_BOUND, R_BOUND].
 
-    #Storing results.
-    store_output(result)
+    PARAMETERS: must_print[bool]: True if result should be printed, False otherwise.
+
+    """
+
+    #Extracting input.
+    input = find_input()
+
+    #Running the experiment.
+    result = bound.execute_script(input, must_print, True)[2:]
+    
+    #Storing output.
+    store_output(result) #result = [P_BOUND, R_BOUND]
 #___________________________________________________________________________________________
 
 def find_input():
@@ -61,8 +117,30 @@ def find_input():
 
     """
 
-    m = [[2,0],[0,0]]
-    n = [0,2]
+    mat = [[2,0],[0,0]]
+    num_range = [0,2]
+
+    #mat = [[2,3],[0,0]] #56 states
+    #num_range = [0,5]
+
+    #mat = [[2,0],[0,0]] #10 states
+    #num_range = [0,2]
+
+    #mat = [[2,1],[0,0]] #20 states
+    #num_range = [0,3]
+
+    #mat = [[7,7],[0,0]]
+    #num_range = [0,7]
+
+    #mat = [[0,6],[0,0]] #84 states
+    #num_range = [0,6]
+
+    #mat = [[3,0],[0,0]] #A weird bug shows up. 
+    #num_range = [0,2]
+
+    input = [mat, num_range]
+
+    return input
 #___________________________________________________________________________________________
 
 def store_output(output):
@@ -77,5 +155,8 @@ def store_output(output):
     pass
 #___________________________________________________________________________________________
 
-#Running the experiment.
-run_experiments()
+#If results should be printed, must_print = True. False otherwise.
+must_print = True
+
+#Running the experiment. Open the function to pick which one to run. 
+run_experiments(must_print)

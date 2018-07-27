@@ -73,7 +73,10 @@ def calculate_bound(matrix, is_p_matrix):
 	B = X*D
 	M = P*B
 
-	[L,H] = pari.mateigen(M,1)
+	if is_p_matrix:
+		[L,H] = pari.mateigen(M,1)
+	else:
+		[L,H] = pari.mateigen(M,0.5)
 	sle = L[N-2]
 
 	bound = -2 * (math.log(2)/math.log(sle)) * (epsilon + math.log(N-1)/math.log(2))

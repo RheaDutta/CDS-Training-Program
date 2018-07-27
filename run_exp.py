@@ -138,11 +138,17 @@ def find_input():
 
     """
 
-    mat = [[2,0],[0,0]]
-    num_range = [0,2]
+    #mat = [[2,0],[0,0]] #7 states
+    #num_range = [0,1]
 
     #mat = [[2,3],[0,0]] #56 states
     #num_range = [0,5]
+
+    #mat = [[5,0],[0,0]] #41 states
+    #num_range = [0,3]
+
+    #mat = [[3,0],[0,0]] #17 states
+    #num_range = [0,2]
 
     #mat = [[2,0],[0,0]] #10 states
     #num_range = [0,2]
@@ -150,13 +156,13 @@ def find_input():
     #mat = [[2,1],[0,0]] #20 states
     #num_range = [0,3]
 
-    #mat = [[7,7],[0,0]]
-    #num_range = [0,7]
+    mat = [[7,7],[0,0]]
+    num_range = [0,7]
 
     #mat = [[0,6],[0,0]] #84 states
     #num_range = [0,6]
 
-    #mat = [[3,0],[0,0]] #A weird bug shows up. 
+    #mat = [[3,0],[0,0]] #17 states
     #num_range = [0,2]
 
     input = [mat, num_range]

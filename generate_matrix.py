@@ -41,7 +41,7 @@ super_states = []
 def compute(input, must_print):
 	"""
 	PRINTS: The P-Matrix and the reduced #matrix for the given matrix.
-			(Can also return the P-Matrix by adding the line - return p_matrix)
+
 	PARAMETERS:	mat [multi-dimensional array]: The matrix whose p-matrix must be found.
 				num_range [list]: The range of numbers that can be substituted in the
 								matrix in the format [min,max].
@@ -61,8 +61,9 @@ def compute(input, must_print):
 	#Next iterations
 	iterations(num_range) 
 	
+	print(super_states)
 	#Reordering results. 
-	reordered_p_matrix = reorder() 
+	reordered_p_matrix = reorder()
 	
 	#Simplifying the P-Matrix
 	p_matrix = compress_p_matrix(reordered_p_matrix)

@@ -92,7 +92,7 @@ def main(mat, num_range):
 								Eg: [0,255] for RGB.
 	
 	"""
-	result = assemble_probabilities(mat, num_range) 
+	result = assemble_probabilities(mat, num_range)
 	return result
 	
 #########################################################################################
@@ -114,19 +114,29 @@ def assemble_probabilities(mat, num_range):
 	#Calculating the number of states.
 	num_states = tree.get_num_states()
 	
+	#All states at level two of the tree.
+	L2 = []
+	for x in tree.get_children():
+		for y in x.get_children():
+			L2.append(y)
+
 	prob_list = [] #Contains all the probabilities for the row matrix. 
 	state_list = [] #Contains all the state numbers for the tree.
-	for k in range(1, num_states+1):
-		for i in tree.get_children():
-			for j in i.get_children():
-				if j.get_state_number()==k:
-					prob_list.append(j.get_probability())
-					state_list.append(k)
-					break
-			if j.get_state_number()==k:
+	
+	for i in range(1, num_states+1):
+		found = False
+		for s in L2:
+			if s.get_state_number()==i and i not in state_list:
+				prob_list.append(s.get_probability())
+				state_list.append(i)
+				found = True
 				break
-		if len(state_list)==num_states:
-			return prob_list
+		if found is False:
+			prob_list.append([0])
+			state_list.append(i)
+			found = True
+
+	return prob_list
 
 #########################################################################################
 
@@ -449,15 +459,10 @@ class Tree(object):
 		
 		self.add_state_number(state_number)
 		
-		# if probability is not None:
-		# 	self.add_probability(probability)
-		
 		self.probability = []
 		
 		self.children = []
-		# if children is not None:
-		# 	for child in children:
-		# 		self.add_child(child)
+		
 	
 	def __repr__(self):
 		"""
@@ -549,7 +554,6 @@ class Tree(object):
 			for j in i.get_children():
 				if j.get_state_number()>num_states:
 					num_states = j.get_state_number()
-	
 		return num_states
 	
 	def get_all_states(self):

@@ -135,7 +135,7 @@ def assemble_probabilities(mat, num_range):
 			prob_list.append([0])
 			state_list.append(i)
 			found = True
-
+	
 	return prob_list
 
 #########################################################################################
@@ -563,16 +563,16 @@ class Tree(object):
 		num_states = self.get_num_states()
 		
 		l = []
-	
-		for k in range(1, num_states+1):
-			for i in self.get_children():
-				for j in i.get_children():
-					if j.get_state_number()==k:
-						l.append(j.get_state())
-						break
-				if j.get_state_number()==k:
-					break
-				
+
+		l.append(self.get_state())
+
+		for x in self.get_children():
+			if x.get_state() not in l:
+				l.append(x.get_state())
+			for y in x.get_children():
+				if y.get_state() not in l:
+					l.append(y.get_state())
+		
 		return l
 	
 	def generate_super_states(self):
@@ -580,6 +580,7 @@ class Tree(object):
 		Updates super_states attribute.
 		"""
 		l1 = self.get_children()
+
 		l1_st_num = []
 		l2 = []
 		for child in l1:
@@ -616,7 +617,15 @@ class Tree(object):
 			for tree in tree_list:
 				l.append(tree.get_state())
 			x.append(l)
-			
+
+		root = False
+		for super_st in x:
+			if self.get_state() in super_st:
+				root = True
+
+		if root is False:
+			x.append([self.get_state()])
+
 		self.super_states = x
 		
 	def get_super_states(self):

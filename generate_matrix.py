@@ -61,7 +61,6 @@ def compute(input, must_print):
 	#Next iterations
 	iterations(num_range) 
 	
-	print(super_states)
 	#Reordering results. 
 	reordered_p_matrix = reorder()
 	

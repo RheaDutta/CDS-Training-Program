@@ -44,7 +44,7 @@ import math
 
 #______________________________________________________________________________________________#
 
-def calculate_bound(matrix, is_p_matrix):
+def calculate_bound():#matrix, is_p_matrix):
 
 	"""
 	
@@ -56,17 +56,22 @@ def calculate_bound(matrix, is_p_matrix):
 
 	"""
 
-	if is_p_matrix:
-		P = convert_matrix(matrix, True)
-	else:
-		P = convert_matrix(matrix, False)
+	#if is_p_matrix:
+	#	P = convert_matrix(matrix, True)
+	#else:
+	#	P = convert_matrix(matrix, False)
 
-	
+	P = convert_matrix([[[1,10],[1,10],[1,10],[1,10],[1,10],[1,10],[1,10],[1,10],[1,10],[1,10]],[[1,6],[1,18],[1,18],[1,18],[1,6],[1,18],[1,18],[1,6],[1,18],[1,6]],[[0],[1,6],[1,6],[1,6],[0],[1,6],[1,6],[0],[1,6],[0]],[[0],[1,6],[1,6],[1,6],[0],[1,6],[1,6],[0],[1,6],[0]],[[1,6],[1,18],[1,18],[1,18],[1,6],[1,18],[1,18],[1,6],[1,18],[1,6]], [[0],[1,6],[1,6],[1,6],[0],[1,6],[1,6],[0],[1,6],[0]],[[0],[1,6],[1,6],[1,6],[0],[1,6],[1,6],[0],[1,6],[0]], [[1,6],[1,18],[1,18],[1,18],[1,6],[1,18],[1,18],[1,6],[1,18],[1,6]], [[1,6],[1,18],[1,18],[1,18],[1,6],[1,18],[1,18],[1,6],[1,18],[1,6]], [[1,6],[1,18],[1,18],[1,18],[1,6],[1,18],[1,18],[1,6],[1,18],[1,6]]], True )
+	#P = [[[1,5], [4,5]], [[9,10], [1,10]]]
+	#P = [[[3,5], [2,5]], [[2,7],[5,7]]]
+	is_p_matrix = True
+
 	epsilon = pari('80')
 	Size = pari.matsize(P)
 	N = pari(Size[1])
 	
-	D = (1/N)*pari.matid(N)
+	D = pari(1/N)*pari.matid(N)
+	#D = (1/N)*pari.matid(N) #this was there before the change
 	
 	T = pari.mattranspose(P)
 	X = pari.matinverseimage(D,T)
@@ -77,7 +82,8 @@ def calculate_bound(matrix, is_p_matrix):
 		[L,H] = pari.mateigen(M,1)
 	else:
 		[L,H] = pari.mateigen(M,0.5)
-	sle = L[N-2]
+	sle = pari(L[N-2])
+	#sle = L[N-2] #this was there before the change
 
 	bound = -2 * (math.log(2)/math.log(sle)) * (epsilon + math.log(N-1)/math.log(2))
 	

@@ -113,29 +113,22 @@ def assemble_probabilities(mat, num_range):
 	
 	#Calculating the number of states.
 	num_states = tree.get_num_states()
-	
-	#All states at level two of the tree.
-	L2 = []
-	for x in tree.get_children():
-		for y in x.get_children():
-			L2.append(y)
 
-	prob_list = [] #Contains all the probabilities for the row matrix. 
+	prob_list = [[0]]*num_states #Contains all the probabilities for the row matrix. 
 	state_list = [] #Contains all the state numbers for the tree.
 	
-	for i in range(1, num_states+1):
-		found = False
-		for s in L2:
-			if s.get_state_number()==i and i not in state_list:
-				prob_list.append(s.get_probability())
-				state_list.append(i)
-				found = True
+	for k in range(1, num_states+1):
+		for i in tree.get_children():
+			for j in i.get_children():
+				if j.get_state_number()==k:
+					prob_list[k-1] = j.get_probability()
+					state_list.append(k)
+					break
+			if j.get_state_number()==k:
 				break
-		if found is False:
-			prob_list.append([0])
-			state_list.append(i)
-			found = True
-	
+		if len(state_list)==num_states:
+			return prob_list
+
 	return prob_list
 
 #########################################################################################
@@ -563,15 +556,18 @@ class Tree(object):
 		num_states = self.get_num_states()
 		
 		l = []
+		
+		for k in range(1, num_states+1):
+			for i in self.get_children():
+				for j in i.get_children():
+					if j.get_state_number()==k:
+						l.append(j.get_state())
+						break
+				if j.get_state_number()==k:
+					break
 
-		l.append(self.get_state())
-
-		for x in self.get_children():
-			if x.get_state() not in l:
-				l.append(x.get_state())
-			for y in x.get_children():
-				if y.get_state() not in l:
-					l.append(y.get_state())
+		if self.get_state() not in l:
+			l.insert(0,self.get_state())
 
 		return l
 	

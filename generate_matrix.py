@@ -69,7 +69,7 @@ def compute(input, must_print):
 	
 	#Finding the reduced matrix
 	r_matrix = reduced_matrix(reordered_p_matrix)
-	
+
 	#Printing results
 	if must_print:
 		printing_p_matrix(p_matrix)
@@ -295,16 +295,15 @@ def reorder_helper(tree, num_states, result):
 								of the given tree. 	
 	
 	"""
-	
 	states = tree.get_all_states()
-	
+
 	new_result = [[0]]*len(all_states_explored)
 	
 	for state in states:
 		for existing_state in all_states_explored:
 			if state == existing_state:
-					pos = states.index(state)
-					new_result[all_states_explored.index(existing_state)]=result[pos]
+				pos = states.index(state)
+				new_result[all_states_explored.index(existing_state)]=result[pos]
 					
 	return new_result
 	

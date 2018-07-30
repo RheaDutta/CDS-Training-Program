@@ -138,8 +138,8 @@ def find_input():
 
     """
 
-    #mat = [[2,0],[0,0]] #7 states
-    #num_range = [0,1]
+    mat = [[2,0],[0,0]] #7 states
+    num_range = [0,1]
 
     #mat = [[2,3],[0,0]] #56 states
     #num_range = [0,5]
@@ -156,8 +156,11 @@ def find_input():
     #mat = [[2,1],[0,0]] #20 states
     #num_range = [0,3]
 
-    mat = [[7,7],[0,0]]
-    num_range = [0,7]
+    #mat = [[7,7],[0,0]]
+    #num_range = [0,7]
+    
+    #mat = [[2,3],[1,0]] #44 states
+    #num_range = [0,3]
 
     #mat = [[0,6],[0,0]] #84 states
     #num_range = [0,6]

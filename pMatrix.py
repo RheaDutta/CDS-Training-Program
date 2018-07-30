@@ -572,62 +572,43 @@ class Tree(object):
 			for y in x.get_children():
 				if y.get_state() not in l:
 					l.append(y.get_state())
-		
+
 		return l
 	
 	def generate_super_states(self):
 		"""
 		Updates super_states attribute.
 		"""
-		l1 = self.get_children()
 
-		l1_st_num = []
-		l2 = []
-		for child in l1:
-			l1_st_num.append(child.get_state_number())
-			l2.append(child.get_children())
-		
-		l2_st_num = []
-		for children in l2:
+		l2_state_numbers = [] #[[numbers],[numbers],[numbers]]
+		for parent in self.get_children():
 			l = []
-			for child in children:
+			for child in parent.get_children():
 				l.append(child.get_state_number())
-			l2_st_num.append(l)
-		
-		super_st = []
-		
-		for st_num in l1_st_num:
-			found = False
-			for st_list in l2_st_num:
-				if st_num in st_list:
-					p1 = l1_st_num.index(st_num)
-					p2 = l2_st_num.index(st_list)
-					if p1!=p2:
-						found = True
-						l = l1[p1].get_children()
-						super_st.append(l)
-						del l1_st_num[p2]
-						break
-			if found is False:
-				super_st.append(l1[l1_st_num.index(st_num)].get_children())
+			l2_state_numbers.append(l)
 		
 		x = []
-		for tree_list in super_st:
-			l = []
-			for tree in tree_list:
-				l.append(tree.get_state())
-			x.append(l)
+		y = []
+		for l in l2_state_numbers:
+			new_l = []
+			for st_num in l:
+				if st_num not in y:
+					new_l.append(self.return_state_given_num(st_num))
+					y.append(st_num)
+			if len(new_l)>0:
+				x.append(new_l)
 
-		root = False
-		for super_st in x:
-			if self.get_state() in super_st:
-				root = True
-
-		if root is False:
+		#If root node not in super states, add it.
+		present = False
+		for l in x:
+			if self.get_state() in l:
+				present = True
+		
+		if present is False:
 			x.append([self.get_state()])
 
 		self.super_states = x
-		
+
 	def get_super_states(self):
 		"""
 		Returns super_states.

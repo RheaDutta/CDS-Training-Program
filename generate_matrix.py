@@ -59,7 +59,7 @@ def compute(input, must_print):
 	first_iteration(mat, num_range)
 	
 	#Next iterations
-	iterations(num_range) 
+	iterations(num_range)
 	
 	#Reordering results. 
 	reordered_p_matrix = reorder()
@@ -116,7 +116,7 @@ def first_iteration(mat, num_range):
 	#Adding super states from first tree to super_states.
 	for sp in tree.get_super_states():
 		super_states.append(sp)
-		
+	
 	#Adding results for first iteration to final list.
 	all_results.append(pMatrix.main(mat, num_range))
 
@@ -203,17 +203,17 @@ def update_super_states(tree):
 	
 	for i in range(len(sp_st)):
 		
-		sample_state = sp_st[i][0]
-		
+		sample = sp_st[i][0]
+
 		present = False
 		for super_state in super_states:
-			if sample_state in super_state:
+			if sample in super_state:
 				present = True
 				break
-		
+
 		if present is False:
 			super_states.append(sp_st[i])
-	
+		
 #-----------------------------------------------------------------------------#
 
 def printing_p_matrix(new_all_results):

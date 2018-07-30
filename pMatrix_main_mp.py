@@ -142,7 +142,7 @@ def next_iterations(num_range):
 		#Vector for current iteration.
 		vector = all_states_explored[i]
 
-		pool.apply(add_next_iterations, args=(num_range, vector, q, states_q))
+		pool.apply_async(add_next_iterations, args=(num_range, vector, q, states_q))
 
 		#Extracting results.
 		result = q.get()
@@ -199,19 +199,18 @@ def reorder():
 	#This is the required P-Matrix.
 	all_results = []*len(mega_list)
 
-	process_list = []
+	pool = mp.Pool()
+	m = mp.Manager()
+	q = m.Queue()
 
 	for i in range(0, len(mega_list)):
 		new_result = [[0]]*len(mega_list) #The reordered result for each iteration.
-		q = mp.Queue()
-		p = mp.Process(target = reorder_helper, args = (mega_list[i],i,new_result, mega_list,q))
-		process_list.append(p)
-		p.start()
+		pool.apply_async(reorder_helper, args = (mega_list[i],i,new_result, mega_list,q))
 		all_results.insert(i, q.get())
 
 	#Making sure that all processes are done before moving on.
-	for p in process_list:
-		p.join()
+	pool.close()
+	pool.join()
 
 	return all_results
 

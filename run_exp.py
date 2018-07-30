@@ -52,7 +52,7 @@ def generate_pmatrix(inputs):
     """
 
     #Generates matrices. matrices = [p_matrix, reduced p_matrix]
-    matrices = M.compute(inputs, False)
+    matrices = M.compute(inputs)
     return matrices
 
 def generate_bounds(inputs):

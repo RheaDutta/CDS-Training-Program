@@ -434,6 +434,12 @@ def compress_p_matrix(p_matrix):
 	
 #-----------------------------------------------------------------------------#
 
+def return_super_states():
+
+	#Returns super_states list.
+	return super_states
+
+#-----------------------------------------------------------------------------#
 
 #Keeping track of how long the program takes to run. 
 #start_time = time.time()

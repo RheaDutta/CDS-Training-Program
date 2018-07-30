@@ -39,7 +39,8 @@ Written by Rhea Dutta
 
 """
 import sys
-# import bound
+from datetime import datetime
+import bound
 # import generate_matrix as M
 import pMatrix_main_mp as M
 from file_to_matrix import parse_matrix
@@ -74,6 +75,9 @@ if __name__ == '__main__':
 
     file = sys.argv[1]
 
+    start = datetime.now()
     for mat, num_range in parse_matrix(file):
         generate_pmatrix([mat, num_range])
         generate_bounds([mat, num_range])
+
+    print("Total sec:", (datetime.now() - start).total_seconds())

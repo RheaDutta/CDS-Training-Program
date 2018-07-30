@@ -22,7 +22,7 @@ super_states = []
 
 #_____________________________________________________________________________#
 
-def compute(input, must_print):
+def compute(input):
 	"""
 	PRINTS: The P-Matrix for the given matrix.
 			(Can also return the P-Matrix by adding the line - return new_all_results)
@@ -31,7 +31,6 @@ def compute(input, must_print):
 								matrix in the format [min,max].
 								Eg: [0,255] for RGB.
 				input[list]: [mat, num_range]
-				must_print [bool]: True if results must be printed, False otherwise.
 
 	"""
 
@@ -60,10 +59,9 @@ def compute(input, must_print):
 	r_matrix = reduced_matrix(reordered_p_matrix)
 
 	#Printing results
-	if must_print:
-		printing_p_matrix(p_matrix)
-		printing_r_matrix(r_matrix)
-		print_summary(p_matrix, r_matrix)
+	# printing_p_matrix(p_matrix)
+	# printing_r_matrix(r_matrix)
+	print_summary(p_matrix, r_matrix)
 
 	return [p_matrix, r_matrix]
 

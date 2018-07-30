@@ -237,6 +237,7 @@ def reorder_helper(tup,i,new_result, mega_list,q):
     #All information in tup.
     state = tup[0]
     result = tup[1]
+    print(result)
     num_states = tup[2]
     tree = tup[3]
 

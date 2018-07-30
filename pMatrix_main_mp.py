@@ -1,8 +1,13 @@
-#Find P-Matrix using Multiprocessing and Queues. Very slow as compared to sequential version.
+"""
+Find P-Matrix using Multiprocessing and Queues.
+"""
 
-import pMatrix
 import multiprocessing as mp
 import time
+import sys
+
+import pMatrix
+from file_to_matrix import parse_matrix
 
 # Set True to print
 verbose = True
@@ -22,7 +27,7 @@ super_states = []
 #Contains all the superstates. 2D list.
 
 
-def compute(input):
+def compute(inputs):
     """
     PRINTS: The P-Matrix for the given matrix.
             (Can also return the P-Matrix by adding the line - return new_all_results)
@@ -34,8 +39,8 @@ def compute(input):
     """
 
     #Input
-    mat = input[0]
-    num_range = input[1]
+    mat = inputs[0]
+    num_range = inputs[1]
 
     #First Iteration
     first_iteration(mat, num_range)
@@ -433,10 +438,18 @@ def print_summary(p_matrix, r_matrix):
     print("____________________________________________________________________________________")
 
 
+def usage():
+    print('Usage: ',sys.argv[0]," filename")
+
 #start_time = time.time()
 if __name__ == '__main__':
-        p = mp.Process(target=compute, args = (mat,num_range))
-        p.start()
-        p.join()
-        #print("pMatrix_main_mp.py (multiprocessing with queues) took : ", time.time()-start_time, " seconds")
-        #print("____________________________________________________________________________________")
+    if len(sys.argv) < 2:
+        usage()
+        exit(0)
+
+    file = sys.argv[1]
+
+    for mat, num_range in parse_matrix(file):
+        compute([mat,num_range])
+    #print("pMatrix_main_mp.py (multiprocessing with queues) took : ", time.time()-start_time, " seconds")
+    #print("____________________________________________________________________________________")

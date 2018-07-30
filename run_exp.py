@@ -36,7 +36,7 @@ Instructions for running the script -
 Written by Rhea Dutta
 """
 import sys
-import bound
+# import bound
 import pMatrix_main_mp as M
 # import generate_matrix as M
 from file_to_matrix import parse_matrix
@@ -58,16 +58,10 @@ def generate_bounds(inputs):
     Output in format - [P_BOUND, R_BOUND].
     """
 
-    bounds = bound.execute_script(inputs, True)[2:]
+    # bounds = bound.execute_script(inputs, True)[2:]
+    bounds = 0
     return bounds
 
-
-def get_input(file):
-    """
-    Extract input from sample_inputs.
-    """
-    inputs = parse_matrix(file)
-    return inputs
 
 def store_output(output):
     """
@@ -85,8 +79,7 @@ if __name__ == '__main__':
         exit(0)
 
     file = sys.argv[1]
-    inputs = get_input(file)
 
-    for mat, num_range in inputs:
+    for mat, num_range in parse_matrix(file):
         generate_pmatrix([mat, num_range])
         generate_bounds([mat, num_range])

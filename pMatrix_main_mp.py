@@ -130,8 +130,11 @@ def next_iterations(num_range):
 	#begin at the second element.
 	i=1
 
-	#List of processes.
-	process_list = []
+	pool = mp.Pool()
+
+	m = mp.Manager()
+	# Creating a queue to store results from the process.
+	q = m.Queue()
 
 	while i<len(all_states_explored):
 
@@ -141,17 +144,7 @@ def next_iterations(num_range):
 		#Vector for current iteration.
 		vector = all_states_explored[i]
 
-		#Creating a queue to store results from the process.
-		q = mp.Queue()
-
-		#Creating process.
-		p = mp.Process(target = add_next_iterations, args = (num_range,vector,q,states_q))
-
-		#Adding process to process_list.
-		process_list.append(p)
-
-		#Starting the process.
-		p.start()
+		pool.apply(add_next_iterations, args=(num_range, vector, q, states_q))
 
 		#Extracting results.
 		result = q.get()
@@ -167,9 +160,9 @@ def next_iterations(num_range):
 		#Incrementing iterator.
 		i+=1
 
-	#Making sure that all processes are done before moving on.
-	for p in process_list:
-		p.join()
+	pool.close()
+	pool.join()
+
 
 #-----------------------------------------------------------------------------#
 

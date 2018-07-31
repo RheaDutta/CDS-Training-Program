@@ -76,6 +76,7 @@ if __name__ == '__main__':
         exit(0)
 
     file = sys.argv[1]
+    print("file:", file)
 
     start = datetime.now()
     for mat, num_range in parse_matrix(file):

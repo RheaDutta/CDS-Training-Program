@@ -4,7 +4,7 @@
 
 import pMatrix
 import multiprocessing as mp
-import time
+from datetime import datetime
 
 #---------------Global lists---------------#
 
@@ -115,6 +115,7 @@ def first_iteration(mat, num_range):
 
 def next_iterations(num_range):
 	print("next iteration")
+	start = datetime.now()
 	"""
 	Finds probability row matrix for all the vectors (i.e. states) in the all_states_explored
 	list and builds the all_results P-Matrix.
@@ -160,6 +161,7 @@ def next_iterations(num_range):
 
 	pool.close()
 	pool.join()
+	print("Finished in ", (datetime.now()-start).total_seconds())
 
 
 #-----------------------------------------------------------------------------#
@@ -196,6 +198,7 @@ def reorder():
 
 	"""
 	print("reorder")
+	start = datetime.now()
 	#This is the required P-Matrix.
 	all_results = []*len(mega_list)
 
@@ -204,19 +207,18 @@ def reorder():
 	q = m.Queue()
 
 	for i in range(0, len(mega_list)):
-		new_result = [[0]]*len(mega_list) #The reordered result for each iteration.
-		pool.apply_async(reorder_helper, args = (mega_list[i],i,new_result, mega_list,q))
+		pool.apply_async(reorder_helper, args = (mega_list[i],q))
 		all_results.insert(i, q.get())
 
 	#Making sure that all processes are done before moving on.
 	pool.close()
 	pool.join()
-
+	print("Finished in ", (datetime.now()-start).total_seconds())
 	return all_results
 
 #-----------------------------------------------------------------------------#
 
-def reorder_helper(tup,i,new_result, mega_list,q):
+def reorder_helper(tup,q):
 	"""
 	RETURNS: The reordered form of the probability row matrix corresponding to the
 			given tree and result such that the order of the rows is the same as the
@@ -231,18 +233,16 @@ def reorder_helper(tup,i,new_result, mega_list,q):
 	#All information in tup.
 	state = tup[0]
 	result = tup[1]
-	num_states = tup[2]
 	tree = tup[3]
 
 	#All states that are in the tree.
 	states = tree.get_all_states()
 
-	for i in range(len(mega_list)):
-		for state in states:
-			for existing_state in mega_list[i]:
-				if state == existing_state:
-					pos = states.index(state)
-					new_result[i]=result[pos]
+	new_result = [[0]]*len(all_states_explored)
+
+	for state in states:
+		pos = all_states_explored.index(state)
+		new_result[pos] = result[states.index(state)]
 
 	q.put(new_result)
 

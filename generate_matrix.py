@@ -36,60 +36,47 @@ all_trees = []
 all_total_states = []
 super_states = []
 
-#Test Cases 
-#mat = [[2,3],[0,0]] #56 states
-#num_range = [0,5]
-
-mat = [[2,0],[0,0]] #10 states
-num_range = [0,2]
-
-#mat = [[2,1],[0,0]] #20 states
-#num_range = [0,3]
-
-#mat = [[7,7],[0,0]]
-#num_range = [0,7]
-
-#mat = [[0,6],[0,0]] #84 states
-#num_range = [0,6]
-
-#mat = [[3,0],[0,0]] #A weird bug shows up. 
-#num_range = [0,2]
-
 #-----------------------------------------------------------------------------#
 
-def compute(mat, num_range):
+def compute(input, must_print):
 	"""
-	PRINTS: The P-Matrix and the reduced matrix for the given matrix.
-			(Can also return the P-Matrix by adding the line - return p_matrix)
+	PRINTS: The P-Matrix and the reduced #matrix for the given matrix.
+
 	PARAMETERS:	mat [multi-dimensional array]: The matrix whose p-matrix must be found.
 				num_range [list]: The range of numbers that can be substituted in the
 								matrix in the format [min,max].
 								Eg: [0,255] for RGB.
+				input[list]: [mat, num_range]
+				must_print [bool]: True if results must be printed, False otherwise.
 	
 	"""
+	
+	#Input
+	mat = input[0]
+	num_range = input[1]
+
 	#First iteration ever
 	first_iteration(mat, num_range)
 	
 	#Next iterations
-	iterations(num_range) 
+	iterations(num_range)
 	
 	#Reordering results. 
-	reordered_p_matrix = reorder() 
+	reordered_p_matrix = reorder()
 	
 	#Simplifying the P-Matrix
 	p_matrix = compress_p_matrix(reordered_p_matrix)
 	
 	#Finding the reduced matrix
 	r_matrix = reduced_matrix(reordered_p_matrix)
-	
+
 	#Printing results
-	printing_p_matrix(p_matrix)
-	printing_r_matrix(r_matrix)
-	print_summary(p_matrix, r_matrix)
+	if must_print:
+		printing_p_matrix(p_matrix)
+		printing_r_matrix(r_matrix)
+		print_summary(p_matrix, r_matrix)
 	
-	#print("printing_p_matrix() took: ", time.time()-t5, "seconds.") 
-	
-	return (p_matrix, r_matrix)
+	return [p_matrix, r_matrix]
 	
 #-----------------------------------------------------------------------------#
 
@@ -129,7 +116,7 @@ def first_iteration(mat, num_range):
 	#Adding super states from first tree to super_states.
 	for sp in tree.get_super_states():
 		super_states.append(sp)
-		
+	
 	#Adding results for first iteration to final list.
 	all_results.append(pMatrix.main(mat, num_range))
 
@@ -216,17 +203,17 @@ def update_super_states(tree):
 	
 	for i in range(len(sp_st)):
 		
-		sample_state = sp_st[i][0]
-		
+		sample = sp_st[i][0]
+
 		present = False
 		for super_state in super_states:
-			if sample_state in super_state:
+			if sample in super_state:
 				present = True
 				break
-		
+
 		if present is False:
 			super_states.append(sp_st[i])
-	
+		
 #-----------------------------------------------------------------------------#
 
 def printing_p_matrix(new_all_results):
@@ -308,16 +295,15 @@ def reorder_helper(tree, num_states, result):
 								of the given tree. 	
 	
 	"""
-	
 	states = tree.get_all_states()
-	
+
 	new_result = [[0]]*len(all_states_explored)
 	
 	for state in states:
 		for existing_state in all_states_explored:
 			if state == existing_state:
-					pos = states.index(state)
-					new_result[all_states_explored.index(existing_state)]=result[pos]
+				pos = states.index(state)
+				new_result[all_states_explored.index(existing_state)]=result[pos]
 					
 	return new_result
 	
@@ -448,12 +434,18 @@ def compress_p_matrix(p_matrix):
 	
 #-----------------------------------------------------------------------------#
 
+def return_super_states():
+
+	#Returns super_states list.
+	return super_states
+
+#-----------------------------------------------------------------------------#
 
 #Keeping track of how long the program takes to run. 
-start_time = time.time()
+#start_time = time.time()
 
 #Executing the script. 
-compute(mat,num_range)
+#compute(mat,num_range)
 
-print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")
-print("____________________________________________________________________________________")
+#print("generate_matrix.py took ", time.time() - start_time, "seconds to run.")
+#print("____________________________________________________________________________________")

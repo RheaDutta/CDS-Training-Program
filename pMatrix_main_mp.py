@@ -19,28 +19,10 @@ all_states_explored = []
 
 super_states = []
 #Contains all the superstates. 2D list.
-	
-#---------------Test Cases---------------#
-
-
-#mat = [[2,3],[0,0]] #56 states
-#num_range = [0,5]
-
-#mat = [[2,2],[2,2]]
-#num_range = [0,7]
-
-#mat = [[2,2],[2,2]]
-#num_range = [0,6]
-
-mat = [[2,0],[0,0]] #10 states
-num_range = [0,2]
-
-#mat = [[2,1],[0,0]] #20 states
-#num_range = [0,3]
 
 #_____________________________________________________________________________#
 
-def compute(mat, num_range):
+def compute(input, must_print):
 	"""
 	PRINTS: The P-Matrix for the given matrix.
 			(Can also return the P-Matrix by adding the line - return new_all_results)
@@ -48,8 +30,15 @@ def compute(mat, num_range):
 				num_range [list]: The range of numbers that can be substituted in the
 								matrix in the format [min,max].
 								Eg: [0,255] for RGB.
+				input[list]: [mat, num_range]
+				must_print [bool]: True if results must be printed, False otherwise.
 	
 	"""
+
+	#Input
+	mat = input[0]
+	num_range = input[1]
+
 	#First Iteration
 	first_iteration(mat, num_range)
 	
@@ -71,11 +60,12 @@ def compute(mat, num_range):
 	r_matrix = reduced_matrix(reordered_p_matrix)
 	
 	#Printing results
-	printing_p_matrix(p_matrix)
-	printing_r_matrix(r_matrix)
-	print_summary(p_matrix, r_matrix)
+	if must_print:
+		printing_p_matrix(p_matrix)
+		printing_r_matrix(r_matrix)
+		print_summary(p_matrix, r_matrix)
 	
-	return (p_matrix, r_matrix)
+	return [p_matrix, r_matrix]
 	
 #_________________________PROBABILITY MATRIX FUNCTIONS________________________#
 
@@ -441,6 +431,13 @@ def printing_r_matrix(r_matrix):
 
 #-----------------------------------------------------------------------------#
 
+def return_super_states():
+
+	#Returns super_states list.
+	return super_states
+
+#-----------------------------------------------------------------------------#
+
 #__________________________MISCELLANEOUS FUNCTIONS____________________________#
 
 #-----------------------------------------------------------------------------#
@@ -465,13 +462,13 @@ def print_summary(p_matrix, r_matrix):
 #-----------------------------------------------------------------------------#
 
 #Executing the script.
-start_time = time.time()
+#start_time = time.time()
 if __name__ == '__main__':
 		p = mp.Process(target=compute, args = (mat,num_range))
 		p.start()
 		p.join()
-		print("pMatrix_main_mp.py (multiprocessing with queues) took : ", time.time()-start_time, " seconds")
-		print("____________________________________________________________________________________")
+		#print("pMatrix_main_mp.py (multiprocessing with queues) took : ", time.time()-start_time, " seconds")
+		#print("____________________________________________________________________________________")
 		
 #_____________________________________________________________________________#
 

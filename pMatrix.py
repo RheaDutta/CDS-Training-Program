@@ -92,7 +92,7 @@ def main(mat, num_range):
 								Eg: [0,255] for RGB.
 	
 	"""
-	result = assemble_probabilities(mat, num_range) 
+	result = assemble_probabilities(mat, num_range)
 	return result
 	
 #########################################################################################
@@ -113,20 +113,23 @@ def assemble_probabilities(mat, num_range):
 	
 	#Calculating the number of states.
 	num_states = tree.get_num_states()
-	
-	prob_list = [] #Contains all the probabilities for the row matrix. 
+
+	prob_list = [[0]]*num_states #Contains all the probabilities for the row matrix. 
 	state_list = [] #Contains all the state numbers for the tree.
+	
 	for k in range(1, num_states+1):
 		for i in tree.get_children():
 			for j in i.get_children():
 				if j.get_state_number()==k:
-					prob_list.append(j.get_probability())
+					prob_list[k-1] = j.get_probability()
 					state_list.append(k)
 					break
 			if j.get_state_number()==k:
 				break
 		if len(state_list)==num_states:
 			return prob_list
+
+	return prob_list
 
 #########################################################################################
 
@@ -449,15 +452,10 @@ class Tree(object):
 		
 		self.add_state_number(state_number)
 		
-		# if probability is not None:
-		# 	self.add_probability(probability)
-		
 		self.probability = []
 		
 		self.children = []
-		# if children is not None:
-		# 	for child in children:
-		# 		self.add_child(child)
+		
 	
 	def __repr__(self):
 		"""
@@ -549,7 +547,6 @@ class Tree(object):
 			for j in i.get_children():
 				if j.get_state_number()>num_states:
 					num_states = j.get_state_number()
-	
 		return num_states
 	
 	def get_all_states(self):
@@ -559,7 +556,7 @@ class Tree(object):
 		num_states = self.get_num_states()
 		
 		l = []
-	
+		
 		for k in range(1, num_states+1):
 			for i in self.get_children():
 				for j in i.get_children():
@@ -568,53 +565,46 @@ class Tree(object):
 						break
 				if j.get_state_number()==k:
 					break
-				
+
+		if self.get_state() not in l:
+			l.insert(0,self.get_state())
+
 		return l
 	
 	def generate_super_states(self):
 		"""
 		Updates super_states attribute.
 		"""
-		l1 = self.get_children()
-		l1_st_num = []
-		l2 = []
-		for child in l1:
-			l1_st_num.append(child.get_state_number())
-			l2.append(child.get_children())
-		
-		l2_st_num = []
-		for children in l2:
+
+		l2_state_numbers = [] #[[numbers],[numbers],[numbers]]
+		for parent in self.get_children():
 			l = []
-			for child in children:
+			for child in parent.get_children():
 				l.append(child.get_state_number())
-			l2_st_num.append(l)
-		
-		super_st = []
-		
-		for st_num in l1_st_num:
-			found = False
-			for st_list in l2_st_num:
-				if st_num in st_list:
-					p1 = l1_st_num.index(st_num)
-					p2 = l2_st_num.index(st_list)
-					if p1!=p2:
-						found = True
-						l = l1[p1].get_children()
-						super_st.append(l)
-						del l1_st_num[p2]
-						break
-			if found is False:
-				super_st.append(l1[l1_st_num.index(st_num)].get_children())
+			l2_state_numbers.append(l)
 		
 		x = []
-		for tree_list in super_st:
-			l = []
-			for tree in tree_list:
-				l.append(tree.get_state())
-			x.append(l)
-			
-		self.super_states = x
+		y = []
+		for l in l2_state_numbers:
+			new_l = []
+			for st_num in l:
+				if st_num not in y:
+					new_l.append(self.return_state_given_num(st_num))
+					y.append(st_num)
+			if len(new_l)>0:
+				x.append(new_l)
+
+		#If root node not in super states, add it.
+		present = False
+		for l in x:
+			if self.get_state() in l:
+				present = True
 		
+		if present is False:
+			x.append([self.get_state()])
+
+		self.super_states = x
+
 	def get_super_states(self):
 		"""
 		Returns super_states.

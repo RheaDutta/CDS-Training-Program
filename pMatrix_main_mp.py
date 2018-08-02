@@ -10,21 +10,27 @@ from file_to_matrix import parse_matrix
 
 #---------------Global lists---------------#
 
-mega_list = []
+# mega_list = []
 #It is a list of tuples. Each tuple contains elements in the format (state,result,
 #num_states,tree). Each tuple corresponds to a state that has been explored and
 #each element of the tuple represents some aspect of the computations done on the
 #respective state.
 
-all_states_explored = []
+# all_states_explored = []
 #This list will contain all states to be explored.
 
-super_states = []
+# super_states = []
 #Contains all the superstates. 2D list.
 
 #_____________________________________________________________________________#
 
 def compute(input):
+    global mega_list
+    global all_states_explored
+    global super_states
+    mega_list = []
+    all_states_explored = []
+    super_states = []
     """
     PRINTS: The P-Matrix for the given matrix.
             (Can also return the P-Matrix by adding the line - return new_all_results)
@@ -86,7 +92,6 @@ def first_iteration(mat, num_range):
                                 Eg: [0,255] for RGB.
 
     """
-    print("First iteration")
     #Converting the matrix into a vector.
     state = pMatrix.matrix_to_vector(mat)
 
@@ -116,7 +121,6 @@ def first_iteration(mat, num_range):
 #-----------------------------------------------------------------------------#
 
 def next_iterations(num_range):
-    print("next iteration")
     start = datetime.now()
     """
     Finds probability row matrix for all the vectors (i.e. states) in the all_states_explored
@@ -163,7 +167,7 @@ def next_iterations(num_range):
 
     pool.close()
     pool.join()
-    print("Finished in ", (datetime.now()-start).total_seconds())
+    print("iteration 2 time:", (datetime.now()-start).total_seconds())
 
 
 #-----------------------------------------------------------------------------#
@@ -199,7 +203,6 @@ def reorder():
     the same as the order of columns.
 
     """
-    print("reorder")
     start = datetime.now()
     #This is the required P-Matrix.
     all_results = []*len(mega_list)
@@ -215,7 +218,7 @@ def reorder():
     #Making sure that all processes are done before moving on.
     pool.close()
     pool.join()
-    print("Finished in ", (datetime.now()-start).total_seconds())
+    print("    reorder time:", (datetime.now()-start).total_seconds())
     return all_results
 
 #-----------------------------------------------------------------------------#
@@ -439,20 +442,21 @@ def return_super_states():
 
 def print_summary(p_matrix, r_matrix):
 
-    print("________________________________SUMMARY OF DATA_____________________________________")
-    print(" 1. P-Matrix")
-    print("        -> Number of states: ", len(all_states_explored))
-    print("        -> Number of rows in P-Matrix: ", len(p_matrix))
-    print(" 2. Reduced P-Matrix")
-    print("        -> Number of super states: ", len(super_states))
-    print("        -> Number of rows in reduced P-Matrix: ", len(r_matrix))
+    # print("________________________________SUMMARY OF DATA_____________________________________")
+    # print(" 1. P-Matrix")
+    # print("        -> Number of states: ", len(all_states_explored))
+    print("Number of states:", len(all_states_explored))
+    # print("        -> Number of rows in P-Matrix: ", len(p_matrix))
+    # print(" 2. Reduced P-Matrix")
+    # print("        -> Number of super states: ", len(super_states))
+    # print("        -> Number of rows in reduced P-Matrix: ", len(r_matrix))
 
-    s = 0
-    for st in super_states:
-        s+=len(st)
+    # s = 0
+    # for st in super_states:
+    #     s+=len(st)
 
-    print("        -> Total number of sub states: ", s)
-    print("____________________________________________________________________________________")
+    # print("        -> Total number of sub states: ", s)
+    # print("____________________________________________________________________________________")
 
 #-----------------------------------------------------------------------------#
 
@@ -470,4 +474,4 @@ if __name__ == '__main__':
     for mat, num_range in parse_matrix(file):
         compute([mat, num_range])
 
-    print("Total sec:", (datetime.now() - start).total_seconds())
+    print("       Total time:", (datetime.now() - start).total_seconds())

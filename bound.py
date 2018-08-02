@@ -11,7 +11,7 @@ Functions in the program -
 	-> printing_matrix()
 	-> printing_summary()
 	-> execute_script()
-	
+
 Two scripts - generate_matrix and pMatrix_main_mp - are imported to generate the
 P-Matrix and the reduced P-Matrix. (generate_matrix is sequentially computed,
 while pMatrix_main_mp is optimized using multiprocessing. Use either one.)
@@ -33,8 +33,9 @@ Script written and implemented by Rhea Dutta in Python.
 #______________________________________________________________________________________________#
 
 #Scripts that generate the P-Matrix and the reduced P-Matrix. Use either one.
-import generate_matrix as M #Sequentially computed.
-#import pMatrix_main_mp as M #Uses multiprocessing.
+from datetime import datetime
+# import generate_matrix as M #Sequentially computed.
+import pMatrix_main_mp as M #Uses multiprocessing.
 
 #Importing Pari to perform computations to guarantee greatest possible accuracy.
 import cypari2 as CP
@@ -47,20 +48,20 @@ import math
 def calculate_bound(matrix, is_p_matrix, super_states = None):
 
 	"""
-	
-	RETURNS: The bound on mixing time for the given matrix. 
+
+	RETURNS: The bound on mixing time for the given matrix.
 
 	PARAMETERS: matrix: The matrix for which the bound on the mixing time must be calculated.
 						(The input is the output of the generate_matrix / pMatrix_main_mp script)
 				is_p_matrix [bool]: True if given matrix is a P-Matrix, False otherwise.
-				super_states [3D list]: List of super states (each super state is a list of 
+				super_states [3D list]: List of super states (each super state is a list of
 										sub states.)
 	"""
-	
+
 	if is_p_matrix:
-	  	P = convert_matrix(matrix, True)
+		P = convert_matrix(matrix, True)
 	else:
-	  	P = convert_matrix(matrix, False)
+		P = convert_matrix(matrix, False)
 		l = [] #List of number of substates in every super state.
 		for sp in super_states:
 			l.append(len(sp))
@@ -82,7 +83,7 @@ def calculate_bound(matrix, is_p_matrix, super_states = None):
 		D = pari.matid(N)
 		for i in range(len(x)):
 			D[i][i]= x[i]
-	
+
 	T = pari.mattranspose(P)
 	X = pari.matinverseimage(D,T)
 	B = pari(X*D)
@@ -93,9 +94,9 @@ def calculate_bound(matrix, is_p_matrix, super_states = None):
 	sle = pari(L[N-2])
 
 	bound = -2 * (math.log(2)/math.log(sle)) * (epsilon + math.log(N-1)/math.log(2))
-	
+
 	bound = math.ceil(bound)
-	
+
 	return bound
 #______________________________________________________________________________________________#
 
@@ -131,7 +132,7 @@ def convert_matrix(matrix, is_p_matrix):
 		result = convert_to_pari(new_matrix)
 		return result
 
-	#Conversion for reduced P-Matrix. 
+	#Conversion for reduced P-Matrix.
 	else:
 		new_matrix = []
 		for row in matrix:
@@ -159,7 +160,7 @@ def convert_to_pari(matrix):
 	PARAMETERS: matrix [2D list]: The matrix for which the bound on mixing time must be found.
 
 	EXAMPLE: input = [[1/2, 3/4], [5/6, 7/8]] wherein each element is a t_FRAC.
-			output = [1/2,3/4;5/6,7/8] wherein the output is a t_MAT. 
+			output = [1/2,3/4;5/6,7/8] wherein the output is a t_MAT.
 
 	"""
 
@@ -169,22 +170,22 @@ def convert_to_pari(matrix):
 		new_row = ''
 
 		for j in range(len(matrix[i])):
-			
+
 			if j==len(matrix[i])-1:
 				last = ''
 			else:
 				last = ','
 			new_row = new_row + str(matrix[i][j]) + last
-		
+
 		if i==len(matrix)-1:
 			final = ''
 		else:
 			final = ';'
 		new_matrix = new_matrix + new_row + final
-	
+
 	r = '['+ new_matrix + ']'
 	result = pari(r)
-	
+
 	return result
 #______________________________________________________________________________________________#
 
@@ -193,19 +194,19 @@ def printing_bound(n, is_p_matrix):
 	"""
 
 	Prints the given bound.
-	
+
 	PARAMETERS: n [int/float]: The given bound.
 				is_p_matrix [bool]: True if n is a bound on the mixing time for a P-Matrix, False
-								otherwise.  
+								otherwise.
 
 	"""
 
-	print("____________________________________________________________________________________")
+	# print("____________________________________________________________________________________")
 	if is_p_matrix:
-		print("Bound on mixing time for P-Matrix: ", n)
+		print("  P-Matrix bound:", n)
 	else:
-		print("Bound on mixing time for reduced P-Matrix: ", n)
-	print("____________________________________________________________________________________")
+		print("r P-Matrix bound:", n)
+	# print("____________________________________________________________________________________")
 #______________________________________________________________________________________________#
 
 def printing_matrix(matrix, is_p_matrix):
@@ -213,12 +214,12 @@ def printing_matrix(matrix, is_p_matrix):
 	"""
 
 	Prints the given matrix.
-	
+
 	PARAMETERS: matrix [Pari.t_MAT]: The given matrix.
 				is_p_matrix [bool]: True if matrix is a P-Matrix, False
-								otherwise.  
+								otherwise.
 
-	"""	
+	"""
 
 	#For P-Matrix.
 	if is_p_matrix:
@@ -227,8 +228,8 @@ def printing_matrix(matrix, is_p_matrix):
 	#For reduced P-Matrix.
 	else:
 		print("________________________________REDUCED MATRIX______________________________________")
-	
-	
+
+
 	for i in range(len(matrix)):
 		print(matrix[i])
 		print("-------------------------------------------------------------------------------------")
@@ -250,25 +251,24 @@ def printing_summary(p_matrix, r_matrix):
 	s = 0
 	for p in p_matrix[0]:
 		s+=1
-	
+
 	print("		-> Number of columns: ", s)
 
 
 	print(" 2. Reduced P-Matrix")
 	print("		-> Number of super states: ", len(r_matrix))
-	
+
 	p = 0
 	for row in r_matrix:
 		p+=len(row)
-		
+
 	print("		-> Total number of sub states: ", p)
-	print("____________________________________________________________________________________")
 #______________________________________________________________________________________________#
 
 def execute_script(input, must_print, only_bounds):
 
 	"""
-	
+
 	Executes the script.
 	Output in the form [P_MATRIX, R_MATRIX, P_BOUND, R_BOUND].
 
@@ -281,33 +281,31 @@ def execute_script(input, must_print, only_bounds):
 
 	#Comment out whichever one is not being used.
 	#Do not change 'False' here.
-	matrices = M.compute(input, False)
+	matrices = M.compute(input)
 	super_states = M.return_super_states()
 
-	#The required matrices. 
+	#The required matrices.
 	P_MATRIX = matrices[0]
 	R_MATRIX = matrices[1]
 
 	#Executing the script.
+	start = datetime.now()
 	P_BOUND = calculate_bound(P_MATRIX, True)
+	print("      bound time:", (datetime.now()-start).total_seconds())
 	R_BOUND = calculate_bound(R_MATRIX, False, super_states)
-	
+
 	#Printing results.
 	if must_print:
 		if only_bounds:
 			printing_bound(P_BOUND, True)
 			printing_bound(R_BOUND, False)
 		else:
-			printing_matrix(P_MATRIX, True)
-			printing_matrix(R_MATRIX, False)
+			# printing_matrix(P_MATRIX, True)
+			# printing_matrix(R_MATRIX, False)
 			printing_bound(P_BOUND, True)
 			printing_bound(R_BOUND, False)
-			printing_summary(P_MATRIX, R_MATRIX)
+			# printing_summary(P_MATRIX, R_MATRIX)
 
 	#Returning results.
 	return [P_MATRIX, R_MATRIX, P_BOUND, R_BOUND]
 #______________________________________________________________________________________________#
-
-#input = [[[2,0],[0,0]], [0,2]]
-#Executing the script
-#execute_script(input, True, True)

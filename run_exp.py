@@ -40,7 +40,7 @@ Written by Rhea Dutta
 """
 import sys
 from datetime import datetime
-# import bound
+import bound
 # import generate_matrix as M
 import pMatrix_main_mp as M
 from file_to_matrix import parse_matrix
@@ -61,8 +61,7 @@ def generate_bounds(inputs):
     Output in format - [P_BOUND, R_BOUND].
     """
 
-    # bounds = bound.execute_script(inputs, True)[2:]
-    bounds = 0
+    bounds = bound.execute_script(inputs, True, False)[2:]
     return bounds
 
 
@@ -76,11 +75,16 @@ if __name__ == '__main__':
         exit(0)
 
     file = sys.argv[1]
-    print("file:", file)
+    # print("            file:", file)
 
-    start = datetime.now()
     for mat, num_range in parse_matrix(file):
-        generate_pmatrix([mat, num_range])
-        generate_bounds([mat, num_range])
-
-    print("Total sec:", (datetime.now() - start).total_seconds())
+        start = datetime.now()
+        print(mat)
+        print(num_range)
+        # generate_pmatrix([mat, num_range])
+        try:
+            generate_bounds([mat, num_range])
+        except:
+            print("FAILED")
+            continue
+        print("      Total time:", (datetime.now() - start).total_seconds())

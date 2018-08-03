@@ -36,12 +36,11 @@ Script written and implemented by Rhea Dutta in Python.
 import generate_matrix as M #Sequentially computed.
 #import pMatrix_main_mp as M #Uses multiprocessing.
 
-#Importing Pari to perform computations to guarantee greatest possible accuracy.
-import cypari2 as CP
-pari = CP.Pari() #Pari object.
+import numpy as np
+from numpy.linalg import inv
+from numpy.linalg import eig
 
 import math
-
 #______________________________________________________________________________________________#
 
 def calculate_bound(matrix, is_p_matrix, super_states = None):
@@ -65,33 +64,31 @@ def calculate_bound(matrix, is_p_matrix, super_states = None):
 		for sp in super_states:
 			l.append(len(sp))
 
-	epsilon = pari('80')
+	epsilon = 80
 
-	Size = pari.matsize(P)
-	N = pari(Size[1])
+	Size = P.shape
+	N = Size[1]
 
 	if is_p_matrix:
-		D = pari(1/N)*pari.matid(N)
+		D = (float(1)/float(N))*np.identity(N)
 	else:
-		s = pari(sum(l))
-		new_l = []
+		s = sum(l)
+		x = []
 		for n in l:
-			n_ = pari(n)
-			new_l.append(n_/s)
-		x = convert_to_pari([new_l])
-		D = pari.matid(N)
+			x.append(float(n)/float(s))
+		D = np.identity(N)
 		for i in range(len(x)):
 			D[i][i]= x[i]
 	
-	T = pari.mattranspose(P)
-	X = pari.matinverseimage(D,T)
-	B = pari(X*D)
-	M = pari(P*B)
+	T = P.transpose()
+	X = inv(D)*T
+	B = X*D
+	M = P*B
 
-	[L,H] = pari.mateigen(M,1,100)
+	[L,H] = eig(M)
 
-	sle = pari(L[N-2])
-	
+	sle = L[N-2]
+
 	bound = -2 * (math.log(2)/math.log(sle)) * (epsilon + math.log(N-1)/math.log(2))
 	
 	bound = math.ceil(bound)
@@ -101,91 +98,33 @@ def calculate_bound(matrix, is_p_matrix, super_states = None):
 
 def convert_matrix(matrix, is_p_matrix):
 
-	"""
-	RETURNS: The Pari.t_MAT form of the P-Matrix.
-
-	PARAMETERS: matrix [3D list]: The matrix for which the bound on mixing time must be found.
-									(Basically, it is the output of the aforementioned scripts.)
-				is_p_matrix [bool]: True if given matrix is a P-Matrix, False otherwise.
-
-	EXAMPLE: input = [[[1,2], [3,4]], [[5,6],[7,8]]]
-			output = [1/2,3/4;5/6,7/8] wherein the output is a t_MAT and each element is a t_FRAC.
-
-	"""
-
 	#Conversion for P-Matrix.
-	if is_p_matrix:
-		new_matrix = []
-		for row in matrix:
-			new_row = []
-			for prob in row:
-				if prob[0]!=0:
-					num = pari(prob[0])
-					den = pari(prob[1])
-					new_prob = num/den
-					new_row.append(new_prob)
-				else:
-					new_row.append(pari('0'))
-			new_matrix.append(new_row)
+    if is_p_matrix:
+        new_matrix = []
+        for row in matrix:
+            new_row = []
+            for prob in row:
+                if prob[0]!=0:
+                    new_row.append(float(prob[0])/float(prob[1]))
+                else:
+                    new_row.append(0)
+            new_matrix.append(new_row)
 
-		result = convert_to_pari(new_matrix)
-		return result
+        return np.matrix(new_matrix)
 
 	#Conversion for reduced P-Matrix. 
-	else:
+    else:
 		new_matrix = []
 		for row in matrix:
 			new_row = []
 			for prob in row:
 				if prob[1]!=0:
-					n = pari(prob[0])
-					num = pari(prob[1])
-					den = pari(prob[2])
-					new_prob = num/(den*n)
-					new_row.append(new_prob)
+					new_row.append(float(prob[1])/float(prob[2]*prob[0]))
 				else:
-					new_row.append(pari('0'))
+					new_row.append(0)
 			new_matrix.append(new_row)
-
-		result = convert_to_pari(new_matrix)
-		return result
-#______________________________________________________________________________________________#
-
-def convert_to_pari(matrix):
-
-	"""
-	RETURNS: The Pari.t_MAT form of the P-Matrix.
-
-	PARAMETERS: matrix [2D list]: The matrix for which the bound on mixing time must be found.
-
-	EXAMPLE: input = [[1/2, 3/4], [5/6, 7/8]] wherein each element is a t_FRAC.
-			output = [1/2,3/4;5/6,7/8] wherein the output is a t_MAT. 
-
-	"""
-
-	new_matrix = ''
-
-	for i in range(len(matrix)):
-		new_row = ''
-
-		for j in range(len(matrix[i])):
-			
-			if j==len(matrix[i])-1:
-				last = ''
-			else:
-				last = ','
-			new_row = new_row + str(matrix[i][j]) + last
-		
-		if i==len(matrix)-1:
-			final = ''
-		else:
-			final = ';'
-		new_matrix = new_matrix + new_row + final
-	
-	r = '['+ new_matrix + ']'
-	result = pari(r)
-	
-	return result
+        
+		return np.matrix(new_matrix)
 #______________________________________________________________________________________________#
 
 def printing_bound(n, is_p_matrix):

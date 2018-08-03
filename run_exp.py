@@ -41,7 +41,9 @@ Written by Rhea Dutta
 #___________________________________________________________________________________________
 
 #To find matrices + bounds.
-import bound 
+import bound #Pari implemented in Python.
+
+import bound2 #Same as above. Just Python, no Pari.
 
 #To find only matrices. Use either one.
 import generate_matrix as M 
@@ -124,6 +126,7 @@ def only_bounds(must_print):
 
     #Running the experiment.
     result = bound.execute_script(input, must_print, True)[2:]
+    #result = bound2.execute_script(input, must_print, True)[2:]
     
     #Storing output.
     store_output(result) #result = [P_BOUND, R_BOUND]
@@ -173,6 +176,9 @@ def find_input():
 
     #mat = [[0,28],[0,0]] #Invalid test case.
     #num_range = [0,7]
+
+    #mat = [[1,0],[0,0]]
+    #num_range = [0,3]
 
     #--------------------------Test cases for bound.
 

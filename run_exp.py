@@ -79,12 +79,14 @@ if __name__ == '__main__':
 
     for mat, num_range in parse_matrix(file):
         start = datetime.now()
+        print("-"*25)
         print(mat)
         print(num_range)
-        # generate_pmatrix([mat, num_range])
+        print("-"*25)
+        # generate_bounds([mat, num_range])
         try:
             generate_bounds([mat, num_range])
         except:
-            print("FAILED")
+            print("Error:", sys.exc_info())
             continue
         print("      Total time:", (datetime.now() - start).total_seconds())

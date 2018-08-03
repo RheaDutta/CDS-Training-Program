@@ -92,10 +92,16 @@ def calculate_bound(matrix, is_p_matrix, super_states = None):
 	[L,H] = pari.mateigen(M,1,100)
 
 	sle = pari(L[N-2])
+	if is_p_matrix:
+		print("         pMat SLE:", sle)
+	else:
+		print("         rMat SLE:", sle)
+
 
 	bound = -2 * (math.log(2)/math.log(sle)) * (epsilon + math.log(N-1)/math.log(2))
 
 	bound = math.ceil(bound)
+	# print("           bound:", bound)
 
 	return bound
 #______________________________________________________________________________________________#
@@ -244,25 +250,19 @@ def printing_summary(p_matrix, r_matrix):
 
 	"""
 
-	print("________________________________SUMMARY OF DATA_____________________________________")
-	print(" 1. P-Matrix")
-	print("		-> Number of rows: ", len(p_matrix))
+	# print("________________________________SUMMARY OF DATA_____________________________________")
+	# print(" 1. P-Matrix")
+	# print("		-> Number of rows: ", len(p_matrix))
+	# s = 0
+	# for p in p_matrix[0]:
+	# 	s+=1
 
-	s = 0
-	for p in p_matrix[0]:
-		s+=1
-
-	print("		-> Number of columns: ", s)
-
-
-	print(" 2. Reduced P-Matrix")
-	print("		-> Number of super states: ", len(r_matrix))
-
+	# print("		-> Number of columns: ", s)
+	print("  r Super States:", len(r_matrix))
 	p = 0
 	for row in r_matrix:
 		p+=len(row)
-
-	print("		-> Total number of sub states: ", p)
+	print("    r Sub States:", p)
 #______________________________________________________________________________________________#
 
 def execute_script(input, must_print, only_bounds):
@@ -291,8 +291,11 @@ def execute_script(input, must_print, only_bounds):
 	#Executing the script.
 	start = datetime.now()
 	P_BOUND = calculate_bound(P_MATRIX, True)
-	print("      bound time:", (datetime.now()-start).total_seconds())
+	t1 = datetime.now()
 	R_BOUND = calculate_bound(R_MATRIX, False, super_states)
+	t2 = datetime.now()
+	print("    p bound time:", (t1-start).total_seconds())
+	print("    r bound time:", (t2-t1).total_seconds())
 
 	#Printing results.
 	if must_print:
@@ -304,7 +307,7 @@ def execute_script(input, must_print, only_bounds):
 			# printing_matrix(R_MATRIX, False)
 			printing_bound(P_BOUND, True)
 			printing_bound(R_BOUND, False)
-			# printing_summary(P_MATRIX, R_MATRIX)
+			printing_summary(P_MATRIX, R_MATRIX)
 
 	#Returning results.
 	return [P_MATRIX, R_MATRIX, P_BOUND, R_BOUND]

@@ -45,7 +45,7 @@ def compute(input):
     #Input
     mat = input[0]
     num_range = input[1]
-
+    start = datetime.now()
     #First Iteration
     first_iteration(mat, num_range)
 
@@ -60,6 +60,7 @@ def compute(input):
     #Reordering results.
     reordered_p_matrix = reorder()
 
+    print("  pmat calc time:", (datetime.now() - start).total_seconds())
     #Simplifying the P-Matrix
     p_matrix = compress_p_matrix(reordered_p_matrix)
 
@@ -167,7 +168,7 @@ def next_iterations(num_range):
 
     pool.close()
     pool.join()
-    print("iteration 2 time:", (datetime.now()-start).total_seconds())
+    # print("iteration 2 time:", (datetime.now()-start).total_seconds())
 
 
 #-----------------------------------------------------------------------------#
@@ -218,7 +219,7 @@ def reorder():
     #Making sure that all processes are done before moving on.
     pool.close()
     pool.join()
-    print("    reorder time:", (datetime.now()-start).total_seconds())
+    # print("    reorder time:", (datetime.now()-start).total_seconds())
     return all_results
 
 #-----------------------------------------------------------------------------#

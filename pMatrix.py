@@ -110,6 +110,9 @@ def assemble_probabilities(mat, num_range):
 	
 	#Creating the tree.
 	tree = create_tree(mat, num_range)
+
+	if len(tree.get_all_states()) == 1:
+		return [[0]]
 	
 	#Calculating the number of states.
 	num_states = tree.get_num_states()

@@ -91,6 +91,8 @@ def calculate_bound(matrix, is_p_matrix, super_states = None):
 	[L,H] = pari.mateigen(M,1,100)
 
 	sle = pari(L[N-2])
+
+	print("sle: ", sle)
 	
 	bound = -2 * (math.log(2)/math.log(sle)) * (epsilon + math.log(N-1)/math.log(2))
 	
@@ -281,16 +283,20 @@ def execute_script(input, must_print, only_bounds):
 
 	#Comment out whichever one is not being used.
 	#Do not change 'False' here.
+	print("starting matrices")
 	matrices = M.compute(input, False)
 	super_states = M.return_super_states()
+	print("finished matrices")
 
 	#The required matrices. 
 	P_MATRIX = matrices[0]
 	R_MATRIX = matrices[1]
 
+	print("finding bound")
 	#Executing the script.
 	P_BOUND = calculate_bound(P_MATRIX, True)
 	R_BOUND = calculate_bound(R_MATRIX, False, super_states)
+	print("found bound")
 	
 	#Printing results.
 	if must_print:
@@ -298,8 +304,8 @@ def execute_script(input, must_print, only_bounds):
 			printing_bound(P_BOUND, True)
 			printing_bound(R_BOUND, False)
 		else:
-			printing_matrix(P_MATRIX, True)
-			printing_matrix(R_MATRIX, False)
+			#printing_matrix(P_MATRIX, True)
+			#printing_matrix(R_MATRIX, False)
 			printing_bound(P_BOUND, True)
 			printing_bound(R_BOUND, False)
 			printing_summary(P_MATRIX, R_MATRIX)

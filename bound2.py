@@ -40,7 +40,7 @@ import numpy as np
 from numpy.linalg import inv
 from numpy.linalg import eig
 
-import math
+from math import log, ceil
 #______________________________________________________________________________________________#
 
 def calculate_bound(matrix, is_p_matrix, super_states = None):
@@ -85,13 +85,19 @@ def calculate_bound(matrix, is_p_matrix, super_states = None):
 	B = X*D
 	M = P*B
 
+	print("T: ", T)
+	print("X: ",X)
+	print("B: ", B)
+	print("M: ", M)
+
 	[L,H] = eig(M)
 
 	sle = L[N-2]
-
-	bound = -2 * (math.log(2)/math.log(sle)) * (epsilon + math.log(N-1)/math.log(2))
+	print("sle: ", sle)
 	
-	bound = math.ceil(bound)
+	bound = -2 * (log(2)/log(sle)) * (epsilon + log(N-1)/log(2))
+	
+	bound = ceil(bound)
 	
 	return bound
 #______________________________________________________________________________________________#
@@ -222,15 +228,15 @@ def execute_script(input, must_print, only_bounds):
 	#Do not change 'False' here.
 	matrices = M.compute(input, False)
 	super_states = M.return_super_states()
-
+	
 	#The required matrices. 
 	P_MATRIX = matrices[0]
 	R_MATRIX = matrices[1]
-
+	
 	#Executing the script.
 	P_BOUND = calculate_bound(P_MATRIX, True)
 	R_BOUND = calculate_bound(R_MATRIX, False, super_states)
-	
+
 	#Printing results.
 	if must_print:
 		if only_bounds:

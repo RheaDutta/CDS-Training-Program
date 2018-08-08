@@ -1,9 +1,9 @@
 print("Calculation of number of states in a Markov chain")
 
-Number  = 4;
-Bound = 21;
+Number  = 6;
+Bound = 24;
 /*Sum = Number/2 * (Bound-1);*/
-Sum = 79;
+Sum = 134;
 
 B = Bound;
 s = Sum;
@@ -14,4 +14,4 @@ print("NumberStates");
 print(NumberStates);
 
 print("Sum");
-print(Sum);
+print(Sum)

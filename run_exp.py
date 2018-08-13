@@ -62,10 +62,10 @@ def run_experiments(must_print):
     """
 
     #Only generate matrices.
-    #only_matrices(must_print)
+    only_matrices(must_print)
     
     #Both matrices and bounds.
-    matrices_and_bounds(must_print)
+    #matrices_and_bounds(must_print)
 
     #Only bounds
     #only_bounds(must_print)
@@ -141,10 +141,11 @@ def find_input():
 
     """
 
-    mat = [[0, 0], [0, 0], [3,0]]
-    num_range = [0,25]
+    mat = [[2,0,0,0]]
+    num_range = [0,2]
+    sub = 2
 
-    input = [mat, num_range]
+    input = [mat, num_range, sub]
 
     return input
 #___________________________________________________________________________________________

@@ -19,7 +19,7 @@ THe program has the following functions -
 Instructions for running the script -
 
     1. Right under this documentation, a few scripts have been imported. 
-        -> Choose one of generate_matrix and pMatrix_main_mp.
+        -> Choose one of generate_matrix and pMatrix_main_mp to be imported as M.
         -> They have the same output.
         -> generate_matrix runs sequentially.
         -> pMatrix_main_mp uses multiprocessing.
@@ -43,7 +43,7 @@ Written by Rhea Dutta
 #To find matrices + bounds.
 import bound #Pari implemented in Python.
 
-import bound2 #Same as above. Just Python, no Pari.
+#import bound2 #Same as above. Just Python, no Pari.
 
 #To find only matrices. Use either one.
 import generate_matrix as M 
@@ -62,13 +62,13 @@ def run_experiments(must_print):
     """
 
     #Only generate matrices.
-    only_matrices(must_print)
+    #only_matrices(must_print)
     
     #Both matrices and bounds.
     #matrices_and_bounds(must_print)
 
     #Only bounds
-    #only_bounds(must_print)
+    only_bounds(must_print)
 #___________________________________________________________________________________________
 
 def only_matrices(must_print):
@@ -141,9 +141,9 @@ def find_input():
 
     """
 
-    mat = [[2,0,0,0]]
+    mat = [[5,0],[0,0],[0,0]]
     num_range = [0,2]
-    sub = 2
+    sub = 3 #Number of pixels to be substituted.
 
     input = [mat, num_range, sub]
 

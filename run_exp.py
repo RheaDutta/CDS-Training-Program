@@ -2,13 +2,13 @@
 
 DOCUMENTATION:
 
-This script has multiple functions - 
+This script has multiple functions -
     -> It can generate the probability matrix for the given input.
     -> It can generate the reduced probability matrix for the given input.
         (This is essentially a condensed version of the probability matrix)
     -> It can find the bounds on the mixing time for each of the aforementioned matrices.
 
-THe program has the following functions - 
+THe program has the following functions -
     -> run_experiments()
     -> only_matrices()
     -> matrices_and_bounds()
@@ -18,8 +18,8 @@ THe program has the following functions -
 
 Instructions for running the script -
 
-    1. Right under this documentation, a few scripts have been imported. 
-        -> Choose one of generate_matrix and pMatrix_main_mp.
+    1. Right under this documentation, a few scripts have been imported.
+        -> Choose one of generate_matrix and pMatrix_main_mp to be imported as M.
         -> They have the same output.
         -> generate_matrix runs sequentially.
         -> pMatrix_main_mp uses multiprocessing.
@@ -27,7 +27,7 @@ Instructions for running the script -
     2. Edit run_experiments() to choose which experiment to run.
 
     3. Scroll to the bottom of the script. If you would like your results to be printed to the screen,
-        change must_print to True. Otherwise, change it to False. In either case, the results 
+        change must_print to True. Otherwise, change it to False. In either case, the results
         will be stored.
 
     4. Change the input in find_input().
@@ -43,10 +43,10 @@ Written by Rhea Dutta
 #To find matrices + bounds.
 import bound #Pari implemented in Python.
 
-import bound2 #Same as above. Just Python, no Pari.
+#import bound2 #Same as above. Just Python, no Pari.
 
 #To find only matrices. Use either one.
-import generate_matrix as M 
+import generate_matrix as M
 #import pMatrix_main_mp as M
 
 #___________________________________________________________________________________________
@@ -54,7 +54,7 @@ import generate_matrix as M
 def run_experiments(must_print):
 
     """
-    
+
     Runs experiments. Use whichever one is required.
 
     PARAMETERS: must_print[bool]: True if result should be printed, False otherwise.
@@ -63,12 +63,12 @@ def run_experiments(must_print):
 
     #Only generate matrices.
     #only_matrices(must_print)
-    
+
     #Both matrices and bounds.
-    matrices_and_bounds(must_print)
+    #matrices_and_bounds(must_print)
 
     #Only bounds
-    #only_bounds(must_print)
+    only_bounds(must_print)
 #___________________________________________________________________________________________
 
 def only_matrices(must_print):
@@ -86,7 +86,7 @@ def only_matrices(must_print):
 
     #Generates matrices. matrices = [p_matrix, reduced p_matrix]
     matrices = M.compute(input, must_print)
-    
+
     #Storing output.
     store_output(matrices)
 #___________________________________________________________________________________________
@@ -106,7 +106,7 @@ def matrices_and_bounds(must_print):
 
     #Running the experiment.
     result = bound.execute_script(input, must_print, False)
-    
+
     #Storing output.
     store_output(result) #result = [P_MATRIX, R_MATRIX, P_BOUND, R_BOUND]
 #___________________________________________________________________________________________
@@ -127,7 +127,7 @@ def only_bounds(must_print):
     #Running the experiment.
     result = bound.execute_script(input, must_print, True)[2:]
     #result = bound2.execute_script(input, must_print, True)[2:]
-    
+
     #Storing output.
     store_output(result) #result = [P_BOUND, R_BOUND]
 #___________________________________________________________________________________________
@@ -141,10 +141,11 @@ def find_input():
 
     """
 
-    mat = [[0, 0], [0, 0], [3,0]]
-    num_range = [0,25]
+    mat = [[5,0],[0,0],[0,0]]
+    num_range = [0,2]
+    sub = 3 #Number of pixels to be substituted.
 
-    input = [mat, num_range]
+    input = [mat, num_range, sub]
 
     return input
 #___________________________________________________________________________________________
@@ -164,5 +165,5 @@ def store_output(output):
 #If results should be printed, must_print = True. False otherwise.
 must_print = True
 
-#Running the experiment. Open the function to pick which one to run. 
+#Running the experiment. Open the function to pick which one to run.
 run_experiments(must_print)

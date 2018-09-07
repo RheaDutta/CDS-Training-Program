@@ -48,18 +48,19 @@ def compute(input, must_print):
 								Eg: [0,255] for RGB.
 				input[list]: [mat, num_range]
 				must_print [bool]: True if results must be printed, False otherwise.
-	
+
 	"""
 	
 	#Input
 	mat = input[0]
 	num_range = input[1]
+	sub = input[2]
 
 	#First iteration ever
-	first_iteration(mat, num_range)
+	first_iteration(mat, num_range, sub)
 	
 	#Next iterations
-	iterations(num_range)
+	iterations(num_range, sub)
 	
 	#Reordering results. 
 	reordered_p_matrix = reorder()
@@ -80,7 +81,7 @@ def compute(input, must_print):
 	
 #-----------------------------------------------------------------------------#
 
-def first_iteration(mat, num_range):
+def first_iteration(mat, num_range, sub):
 	"""
 	Fourfold function -
 	-> Creates tree for the first iteration and adds it to the global list all_trees.
@@ -95,10 +96,13 @@ def first_iteration(mat, num_range):
 				num_range [list]: The range of numbers that can be substituted in the
 								matrix in the format [min,max].
 								Eg: [0,255] for RGB.
+				sub [int]: The size of the block used in the substituition step. For example,
+							if sub = 2, pairwise substituion. If sub = 4, substitution for
+							every four pixels.					
 	
 	"""
 	#Creating the tree for the first iteration. 
-	tree = pMatrix.create_tree(mat, num_range)
+	tree = pMatrix.create_tree(mat, num_range, sub)
 	
 	#Adding the tree to all_trees. 
 	all_trees.append(tree)
@@ -118,11 +122,11 @@ def first_iteration(mat, num_range):
 		super_states.append(sp)
 	
 	#Adding results for first iteration to final list.
-	all_results.append(pMatrix.main(mat, num_range))
+	all_results.append(pMatrix.main(mat, num_range,sub))
 
 #-----------------------------------------------------------------------------#
 
-def iterations(num_range):
+def iterations(num_range, sub):
 	"""
 	Finds probability row matrix for all the vectors (i.e. states) in the all_states_explored
 	list and builds the all_results P-Matrix. 
@@ -130,6 +134,9 @@ def iterations(num_range):
 	PARAMETERS: num_range [list]: The range of numbers that can be substituted in the
 								matrix in the format [min,max].
 								Eg: [0,255] for RGB.
+				sub [int]: The size of the block used in the substituition step. For example,
+							if sub = 2, pairwise substituion. If sub = 4, substitution for
+							every four pixels.
 	
 	"""
 	
@@ -137,14 +144,14 @@ def iterations(num_range):
 	
 	while i<len(all_states_explored):
 		
-		do(num_range,i)
+		do(num_range,i, sub)
 		
 		#Incrementing iterator. 	
 		i+=1
 	
 #-----------------------------------------------------------------------------#
 
-def do(num_range,i):	
+def do(num_range,i, sub):	
 	"""
 	Fourfold function -
 	-> Creates tree for the current iteration and adds it to the global list all_trees.
@@ -159,13 +166,17 @@ def do(num_range,i):
 								matrix in the format [min,max].
 								Eg: [0,255] for RGB.
 				i [int]: Iterator that iterates through all_states_explored list.
+				sub [int]: The size of the block used in the substituition step. For example,
+							if sub = 2, pairwise substituion. If sub = 4, substitution for
+							every four pixels.
+	
 	"""
 	
 	#Converting the vector in all_states_explored to a matrix. 
 	matrix = pMatrix.make_matrix(all_states_explored[i])
 	
 	#Tree for currrent iteration.
-	tree = pMatrix.create_tree(matrix, num_range) 
+	tree = pMatrix.create_tree(matrix, num_range, sub) 
 	
 	#Adding the tree to all_trees.
 	all_trees.append(tree)
@@ -177,7 +188,7 @@ def do(num_range,i):
 	all_total_states.append(num_states) 
 	
 	#Finding results for each iteration.
-	r = pMatrix.main(matrix, num_range)
+	r = pMatrix.main(matrix, num_range, sub)
 		
 	#Adding results for current iteration to all_results. 
 	all_results.append(r)
